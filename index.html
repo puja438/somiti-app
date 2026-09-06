@@ -152,11 +152,9 @@
 
     <!-- ================= কনফিগারেশন ও নাম পরিবর্তন এরিয়া ================= -->
     <script>
-        // [১] অ্যাডমিনের ইউজার আইডি এবং পাসওয়ার্ড পরিবর্তন করার জায়গা:
         const ADMIN_USER_ID = "admin";
         const ADMIN_PASSWORD = "123";
 
-        // [২] ইউজার পারমিশন সিস্টেম (কে কোন মডিউল ব্যবহার করতে পারবে তা এখানে সেট করুন: true/false)
         const userPermissions = {
             mod1: true,
             mod2: true,
@@ -168,7 +166,6 @@
             mod8: true
         };
 
-        // [৩] মডিউল এবং সাব-মডিউলগুলোর নাম এখান থেকে আপনার ইচ্ছামতো পরিবর্তন করতে পারবেন:
         const appConfig = {
             modules: {
                 mod1: {
@@ -240,9 +237,9 @@
 
         <a href="#" onclick="toggleSubMenu('sub2')" id="menuTitle2">👥 ২. সদস্য ব্যবস্থাপনা ▼</a>
         <ul id="sub2" class="submenu-list">
-            <li><a href="#" onclick="loadSubModuleContent('Member-1', 'সাব-মডিউল ১')">সাব-মডিউল ১</a></li>
-            <li><a href="#" onclick="loadSubModuleContent('Member-2', 'সাব-মডিউল ২')">সাব-মডিউল ২</a></li>
-            <li><a href="#" onclick="loadSubModuleContent('Member-3', 'সাব-মডিউল ৩')">সাব-মডিউল ৩</a></li>
+            <li><a href="#" onclick="loadSubModuleContent('Member-1', 'নতুন রেজিস্ট্রেশন')">নতুন রেজিস্ট্রেশন</a></li>
+            <li><a href="#" onclick="loadSubModuleContent('Member-2', 'সার্চ/আপডেট')">সার্চ/আপডেট</a></li>
+            <li><a href="#" onclick="loadSubModuleContent('Member-3', 'প্রোফাইল')">প্রোফাইল</a></li>
             <li><a href="#" onclick="loadSubModuleContent('Member-4', 'সাব-মডিউল ৪')">সাব-মডিউল ৪</a></li>
             <li><a href="#" onclick="loadSubModuleContent('Member-5', 'সাব-মডিউল ৫')">সাব-মডিউল ৫</a></li>
         </ul>
@@ -362,7 +359,7 @@
             </div>
         </div>
 
-        <!-- ডাইনামিক ফর্ম ভিউ (সাব-মডিউল সিলেক্ট করলে এটি ওপেন হবে এবং ব্যাক চাপলে ড্যাশবোর্ডে ফিরবে) -->
+        <!-- ডাইনামিক ফর্ম ভিউ -->
         <div id="dynamicFormContainer">
             <div class="sub-header-bar">
                 <h2 id="formPageTitle" style="color: #1e3c72; margin:0;">সাব-মডিউল</h2>
@@ -370,17 +367,11 @@
             </div>
             <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
                 <p id="formSubKeyText" style="color: #666; margin-bottom: 20px;"></p>
-                
-                <!------------------------------------------------------------------------>
-                <!-- [আপনার এইচটিএমএল ফর্ম কোড এখানে ঠিক নিচে কপি-পেস্ট করুন] -->
-                <!------------------------------------------------------------------------>
                 <div style="border: 2px dashed #2a5298; padding: 25px; border-radius: 8px; background: #f8fafc;">
                     <p style="color: #1e3c72; font-weight: bold;">ফর্ম কোড বসানোর নির্দিষ্ট জায়গা:</p>
                     <input type="text" placeholder="নমুনা ইনপুট ফিল্ড..." style="width: 100%; padding: 10px; margin-top: 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
                     <button style="margin-top: 15px; padding: 10px 20px; background: #2a5298; color: white; border: none; border-radius: 6px; cursor: pointer;">সংরক্ষণ করুন</button>
                 </div>
-                <!------------------------------------------------------------------------>
-
             </div>
         </div>
 
@@ -468,9 +459,7 @@
             submenu.style.display = (submenu.style.display === "block") ? "none" : "block";
         }
 
-        // সাব-মডিউল বা ফর্ম লোড করার ফাংশন (ব্যাক চাপলে বাটনসহ ড্যাশবোর্ডে ফিরে যাবে)
         function loadSubModuleContent(moduleKey, moduleTitle) {
-            // পারমিশন চেক করা (ইউজার পারমিশন অনুযায়ী ব্লক করা)
             let parentModuleCode = "mod1";
             if(moduleKey.startsWith("Member")) parentModuleCode = "mod2";
             else if(moduleKey.startsWith("Deposit")) parentModuleCode = "mod3";
@@ -496,7 +485,6 @@
             window.scrollTo(0, 0);
         }
 
-        // ড্যাশবোর্ডে ফিরে যাওয়ার ফাংশন (ফরম ক্লোজ করে স্লাইডবার মেনু বা ড্যাশবোর্ডে ফিরিয়ে নেবে)
         function goToDashboard() {
             document.getElementById('dynamicFormContainer').style.display = 'none';
             document.getElementById('dashboardView').style.display = 'block';
@@ -508,7 +496,6 @@
             return sb.style.width === "280px";
         }
 
-        // ক্যারিয়ার পেজ লোড করার ফাংশন
         function loadCareerPage() {
             if(sidebarOpenCheck()) toggleSidebar();
             
