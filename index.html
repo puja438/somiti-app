@@ -26,7 +26,7 @@
         header {
             background: var(--primary-gradient);
             color: white;
-            padding: 15px 30px;
+            padding: 18px 35px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -37,16 +37,16 @@
         }
 
         .header-left { display: flex; align-items: center; gap: 15px; }
-        .menu-toggle-btn { font-size: 24px; background: none; border: none; color: white; cursor: pointer; display: none; }
+        .menu-toggle-btn { font-size: 28px; background: none; border: none; color: white; cursor: pointer; display: none; }
         
         .login-btn, .logout-btn, .career-btn {
             background-color: #ffffff;
             color: #1e3c72;
             border: none;
-            padding: 8px 22px;
-            font-size: 15px;
+            padding: 10px 25px;
+            font-size: 16px;
             font-weight: bold;
-            border-radius: 20px;
+            border-radius: 25px;
             cursor: pointer;
             transition: 0.3s;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -54,7 +54,7 @@
         .logout-btn { background-color: #ff5252; color: white; }
         .login-btn:hover, .career-btn:hover { background-color: var(--secondary-color); transform: translateY(-1px); }
 
-        .logo-area h1 { margin: 0; font-size: 26px; letter-spacing: 1.5px; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.2); }
+        .logo-area h1 { margin: 0; font-size: 30px; letter-spacing: 1.5px; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.2); }
 
         /* স্টাইলিশ সাইডবার বা স্লাইড বার */
         .sidebar {
@@ -72,9 +72,9 @@
         }
 
         .sidebar a {
-            padding: 12px 15px 12px 25px;
+            padding: 14px 18px 14px 25px;
             text-decoration: none;
-            font-size: 16px;
+            font-size: 17px;
             color: #cfd8dc;
             display: block;
             transition: 0.3s;
@@ -82,66 +82,69 @@
         }
 
         .sidebar a:hover { color: #fff; background: rgba(255,255,255,0.1); }
-        .sidebar .close-btn { position: absolute; top: 10px; right: 20px; font-size: 30px; color: white; border: none; background: none; }
+        .sidebar .close-btn { position: absolute; top: 10px; right: 20px; font-size: 32px; color: white; border: none; background: none; }
         
         .submenu-list { list-style: none; padding-left: 20px; margin: 0; display: none; background: rgba(0,0,0,0.2); }
-        .submenu-list li a { font-size: 14px; padding: 10px 15px; color: #b0bec5; border-bottom: none; }
+        .submenu-list li a { font-size: 15px; padding: 12px 15px; color: #b0bec5; border-bottom: none; }
 
-        /* মূল কনটেন্ট এরিয়া ও স্পেসিং */
-        .main-content { padding: 40px 20px; max-width: 1100px; margin: 0 auto; }
+        /* মূল কনটেন্ট এরিয়া ও বড় স্পেসিং */
+        .main-content { padding: 50px 25px; max-width: 1200px; margin: 0 auto; }
 
         .hero-section {
             background: var(--primary-gradient);
             color: white;
-            padding: 50px 20px;
+            padding: 60px 30px;
             text-align: center;
-            border-radius: 20px;
-            box-shadow: 0 8px 25px rgba(30,60,114,0.2);
-            margin-bottom: 50px;
+            border-radius: 22px;
+            box-shadow: 0 10px 30px rgba(30,60,114,0.25);
+            margin-bottom: 60px;
         }
-        .hero-section h2 { font-size: 36px; margin: 0 0 10px; }
-        .hero-section p { font-size: 18px; opacity: 0.9; margin: 0; }
+        .hero-section h2 { font-size: 42px; margin: 0 0 15px; }
+        .hero-section p { font-size: 20px; opacity: 0.95; margin: 0; }
 
+        /* ডিরেক্টর প্যানেল বড় সাইজ ও ফাঁকা ফাঁকা লেআউট */
         .directors-container {
             display: flex;
             justify-content: center;
-            gap: 25px;
-            margin: 0 auto 50px;
+            gap: 35px;
+            margin: 0 auto 60px;
             padding: 0 20px;
             flex-wrap: wrap;
         }
 
         .director-card {
             background: var(--card-bg);
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            padding: 30px 20px;
+            border-radius: 18px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             text-align: center;
-            width: 210px;
-            border-top: 4px solid #2a5298;
+            width: 250px;
+            border-top: 5px solid #2a5298;
         }
-        .director-card img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; margin-bottom: 12px; border: 3px solid var(--secondary-color); }
+        .director-card img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; border: 4px solid var(--secondary-color); }
+        .director-card h3 { font-size: 22px; margin: 10px 0 5px; color: #1e3c72; }
+        .director-card p { font-size: 16px; color: #666; margin: 0; }
 
-        .section-title { text-align: center; font-size: 24px; margin: 40px 0 20px; color: #1e3c72; font-weight: bold; }
+        .section-title { text-align: center; font-size: 28px; margin: 50px 0 25px; color: #1e3c72; font-weight: bold; }
 
-        .table-container { background: var(--card-bg); border-radius: 15px; overflow: hidden; box-shadow: 0 6px 20px rgba(0,0,0,0.06); margin-bottom: 40px; }
+        .table-container { background: var(--card-bg); border-radius: 18px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.08); margin-bottom: 50px; }
         table { width: 100%; border-collapse: collapse; text-align: center; }
-        th, td { padding: 15px; border-bottom: 1px solid #edf2f7; }
-        th { background-color: var(--secondary-color); color: #1e3c72; font-weight: bold; }
+        th, td { padding: 18px; border-bottom: 1px solid #edf2f7; font-size: 17px; }
+        th { background-color: var(--secondary-color); color: #1e3c72; font-weight: bold; font-size: 18px; }
 
-        .about-us, .notice-board { background: var(--card-bg); padding: 30px; border-radius: 15px; text-align: center; box-shadow: 0 6px 20px rgba(0,0,0,0.06); margin-bottom: 30px; }
-        .about-us p, .notice-board p { line-height: 1.8; color: #555; font-size: 16px; margin: 0; }
+        .about-us, .notice-board { background: var(--card-bg); padding: 35px; border-radius: 18px; text-align: center; box-shadow: 0 8px 25px rgba(0,0,0,0.08); margin-bottom: 35px; }
+        .about-us p, .notice-board p { line-height: 1.9; color: #444; font-size: 18px; margin: 0; }
 
         /* লগইন পপআপ মডাল */
         .modal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 35px; border-radius: 15px; width: 340px; text-align: center; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        .modal-content input { width: 90%; padding: 12px; margin: 12px 0; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; }
-        .modal-content button { width: 95%; padding: 12px; background: #1e3c72; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 10px; }
-        .close-modal { position: absolute; top: 12px; right: 18px; font-size: 24px; cursor: pointer; color: #888; }
+        .modal-content { background: white; padding: 40px; border-radius: 18px; width: 380px; text-align: center; position: relative; box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
+        .modal-content input { width: 92%; padding: 14px; margin: 14px 0; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 16px; }
+        .modal-content button { width: 96%; padding: 14px; background: #1e3c72; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 17px; font-weight: bold; margin-top: 10px; }
+        .close-modal { position: absolute; top: 12px; right: 18px; font-size: 26px; cursor: pointer; color: #888; }
 
         /* সাব-মডিউল ও ব্যাক বাটন স্টাইল */
-        .sub-header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .back-page-btn { background: #ff5252; color: white; border: none; padding: 8px 18px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; }
+        .sub-header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .back-page-btn { background: #ff5252; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; }
         .back-page-btn:hover { background: #e04848; }
         
         #dynamicFormContainer { display: none; }
@@ -150,7 +153,28 @@
 </head>
 <body>
 
-    <!-- ================= কনফিগারেশন ও নাম পরিবর্তন এরিয়া ================= -->
+    <!-- ================= FIREBASE SDK & CONFIG ================= -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase.app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase.analytics.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyBMQnh34_oN4pQr-lfMMNpb-_VPAk2ROOk",
+          authDomain: "somiti-app-565c4.firebaseapp.com",
+          projectId: "somiti-app-565c4",
+          storageBucket: "somiti-app-565c4.firebasestorage.app",
+          messagingSenderId: "709027826065",
+          appId: "1:709027826065:web:11515f8b9dd2be337bf230",
+          measurementId: "G-K3MVE82WTK"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        window.firebaseApp = app; // গ্লোবালি ব্যবহারের জন্য
+    </script>
+    <!-- ======================================================= -->
+
+    <!-- ================= CONFIGURATION & PERMISSIONS ================= -->
     <script>
         const ADMIN_USER_ID = "admin";
         const ADMIN_PASSWORD = "123";
@@ -168,38 +192,14 @@
 
         const appConfig = {
             modules: {
-                mod1: {
-                    title: "🏠 ১. হোম মডিউল ও কাস্টমাইজ",
-                    sub: ["প্রতিষ্ঠান ও ব্যানার পরিবর্তন", "ব্রাঞ্চ ও ঠিকানা পরিবর্তন", "ডিরেক্টর প্যানেল আপডেট", "কর্মী তালিকা আপডেট", "আমাদের কথা", "নোটিশ সম্পাদনা"]
-                },
-                mod2: {
-                    title: "👥 ২. সদস্য ব্যবস্থাপনা",
-                    sub: ["নতুন রেজিস্ট্রেশন", "সার্চ/আপডেট", "সদস্য লিস্ট", "প্রোফাইল", "ট্রান্সফার"]
-                },
-                mod3: {
-                    title: "💰 ৩. ডিপোজিট ব্যবস্থাপনা",
-                    sub: ["নতুন ডিপোজিট", "সার্চ/আপডেট", "ডিপোজিটর লিস্ট", "ডিপোজিটর প্রোফাইল", "হিস্টরি"]
-                },
-                mod4: {
-                    title: "📈 ৪. সেভিংস অ্যান্ড ডিপিএস",
-                    sub: ["সেভিং/ডিপিএস", "সার্চ/আপডেট", "সেভিং/ডিপিএস লিস্ট", "প্রোফাইল", "হিস্টরি"]
-                },
-                mod5: {
-                    title: "📝 ৫. লোন ব্যবস্থাপনা",
-                    sub: ["লোন আবেদন", "লোন অনুমোদন", "লোন বিতরণ", "লোনার লিস্ট", "হিস্টোরি"]
-                },
-                mod6: {
-                    title: "📊 ৬. হিসাব ও রিপোর্ট",
-                    sub: ["ক্যাশ গ্রহণ", "ক্যাশ বিতরণ", "ক্যাশ রিপোর্ট", "কালেকশন রিপোর্ট", "মাসিক/বাৎসরিক রিপোর্ট"]
-                },
-                mod7: {
-                    title: "💸 ৭. লেনদেন",
-                    sub: ["কালেকশন", "সঞ্চয় ফেরত", "কালেকশন সিট", "বকেয়া লিস্ট", "পেইড গ্রাহক"]
-                },
-                mod8: {
-                    title: "⚙️ ৮. HR-setting",
-                    sub: ["HR-user setup/transfer", "HR-permission", "HR-branch management", "HR-total balance", "HR-working report"]
-                }
+                mod1: { title: "🏠 ১. হোম মডিউল ও কাস্টমাইজ" },
+                mod2: { title: "👥 ২. সদস্য ব্যবস্থাপনা" },
+                mod3: { title: "💰 ৩. ডিপোজিট ব্যবস্থাপনা" },
+                mod4: { title: "📈 ৪. সেভিংস অ্যান্ড ডিপিএস" },
+                mod5: { title: "📝 ৫. লোন ব্যবস্থাপনা" },
+                mod6: { title: "📊 ৬. হিসাব ও রিপোর্ট" },
+                mod7: { title: "💸 ৭. লেনদেন" },
+                mod8: { title: "⚙️ ৮. HR-setting" }
             }
         };
     </script>
@@ -309,19 +309,20 @@
                 <p id="displayAddress">ঠিকানা ও ব্রাঞ্চ: ঢাকা, বাংলাদেশ</p>
             </div>
 
+            <!-- ডিরেক্টর প্যানেল (বড় সাইজ ও ফাঁকা ফাঁকা) -->
             <div class="directors-container">
                 <div class="director-card">
-                    <img src="https://via.placeholder.com/100" alt="Director">
+                    <img src="https://via.placeholder.com/120" alt="Director">
                     <h3 id="dirName1">করীম খনিন</h3>
                     <p>Director</p>
                 </div>
                 <div class="director-card">
-                    <img src="https://via.placeholder.com/100" alt="Director">
+                    <img src="https://via.placeholder.com/120" alt="Director">
                     <h3 id="dirName2">কবিৎ জমাম</h3>
                     <p>Director</p>
                 </div>
                 <div class="director-card">
-                    <img src="https://via.placeholder.com/100" alt="Director">
+                    <img src="https://via.placeholder.com/120" alt="Director">
                     <h3 id="dirName3">কবিৎ হববা</h3>
                     <p>Director</p>
                 </div>
@@ -359,20 +360,30 @@
             </div>
         </div>
 
-        <!-- ডাইনামিক ফর্ম ভিউ -->
+        <!-- ডাইনামিক ফর্ম ভিউ (আলাদা আলাদা মডিউলের জন্য ডেডিকেটেড এরিয়া) -->
         <div id="dynamicFormContainer">
             <div class="sub-header-bar">
                 <h2 id="formPageTitle" style="color: #1e3c72; margin:0;">সাব-মডিউল</h2>
                 <button class="back-page-btn" onclick="goToDashboard()">Back (ড্যাশবোর্ডে)</button>
             </div>
-            <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
-                <p id="formSubKeyText" style="color: #666; margin-bottom: 20px;"></p>
-                <div style="border: 2px dashed #2a5298; padding: 25px; border-radius: 8px; background: #f8fafc;">
-                    <p style="color: #1e3c72; font-weight: bold;">ফর্ম কোড বসানোর নির্দিষ্ট জায়গা:</p>
-                    <input type="text" placeholder="নমুনা ইনপুট ফিল্ড..." style="width: 100%; padding: 10px; margin-top: 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
-                    <button style="margin-top: 15px; padding: 10px 20px; background: #2a5298; color: white; border: none; border-radius: 6px; cursor: pointer;">সংরক্ষণ করুন</button>
+            
+            <!-- ================================================= -->
+            <!-- মডিউল ভিত্তিক কাজের নির্দিষ্ট সেকশন শুরু -->
+            <!-- ================================================= -->
+            <div style="background: white; padding: 35px; border-radius: 18px; box-shadow: 0 6px 25px rgba(0,0,0,0.08);">
+                <p id="formSubKeyText" style="color: #666; margin-bottom: 20px; font-size: 16px;"></p>
+                
+                <!-- সুনির্দিষ্ট মডিউল ফর্ম কন্টেইনার (এখানে আপনি আপনার কোড বসাবেন এবং ডিলিট করতে পারবেন) -->
+                <div id="moduleSpecificFormArea" style="border: 2px dashed #2a5298; padding: 30px; border-radius: 12px; background: #f8fafc;">
+                    <p style="color: #1e3c72; font-weight: bold; font-size: 16px;">[চিহ্নিত এলাকা]: এই নির্দিষ্ট জায়গায় আপনার মডিউলের ফর্মের কোড বসান।</p>
+                    <input type="text" placeholder="নমুনা ইনপুট ফিল্ড..." style="width: 100%; padding: 12px; margin-top: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px;">
+                    <button style="margin-top: 20px; padding: 12px 25px; background: #2a5298; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold;">সংরক্ষণ করুন</button>
                 </div>
             </div>
+            <!-- ================================================= -->
+            <!-- মডিউল ভিত্তিক কাজের নির্দিষ্ট সেকশন শেষ -->
+            <!-- ================================================= -->
+
         </div>
 
     </div>
@@ -381,7 +392,7 @@
     <div id="loginModal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeLoginModal()">&times;</span>
-            <h3 style="color: #1e3c72; margin-top:0;">সিস্টেম লগইন</h3>
+            <h3 style="color: #1e3c72; margin-top:0; font-size: 24px;">সিস্টেম লগইন</h3>
             <input type="text" id="userId" placeholder="ইউজার আইডি (admin)">
             <input type="password" id="userPass" placeholder="পাসওয়ার্ড (123)">
             <button onclick="performLogin()">লগইন করুন</button>
@@ -404,11 +415,12 @@
             });
         }
 
+        // ২৪ ঘণ্টা পর স্বয়ংক্রিয় লগআউট লজিক
         function checkPersistentLogin() {
             const loginTime = localStorage.getItem('loginTime');
             const now = new Date().getTime();
             
-            // ২৪ ঘণ্টা = ২৪ * ৬০ * ৬০ * ১০০০ মিলি সেকেন্ড = ৮৬৪০০০০০ মিলি সেকেন্ড
+            // ২৪ ঘণ্টা = ৮৬৪০০০০০ মিলি সেকেন্ড
             if(loginTime && (now - loginTime < 86400000)) {
                 document.getElementById('threeDotMenu').style.display = 'block';
                 document.getElementById('authButtonContainer').innerHTML = `<button class="logout-btn" onclick="performLogout()">Logout</button>`;
@@ -452,7 +464,7 @@
             const loginTime = localStorage.getItem('loginTime');
             const now = new Date().getTime();
             if(!loginTime || (now - loginTime >= 86400000)) {
-                alert('লগইন এর সময়সীমা শেষ, প্রথমে পুনরায় লগইন করুন!');
+                alert('লগইন এর সময়সীমা শেষ (২৪ ঘণ্টা অতিক্রান্ত), প্রথমে পুনরায় লগইন করুন!');
                 openLoginModal();
                 return;
             }
@@ -465,12 +477,13 @@
             submenu.style.display = (submenu.style.display === "block") ? "none" : "block";
         }
 
+        // আলাদা আলাদা মডিউল লোড করার সুনির্দিষ্ট ফাংশন
         function loadSubModuleContent(moduleKey, moduleTitle) {
             let parentModuleCode = "mod1";
             if(moduleKey.startsWith("Member")) parentModuleCode = "mod2";
             else if(moduleKey.startsWith("Deposit")) parentModuleCode = "mod3";
             else if(moduleKey.startsWith("Savings")) parentModuleCode = "mod4";
-            else if(moduleKey.startsWith("Loan")) parentModuleCode = "mod5";
+            else if(moduleKey.startsWith("Loan")) parentModuleCode, parentModuleCode = "mod5";
             else if(moduleKey.startsWith("Report")) parentModuleCode = "mod6";
             else if(moduleKey.startsWith("Trans")) parentModuleCode = "mod7";
             else if(moduleKey.startsWith("Settings")) parentModuleCode = "mod8";
@@ -486,7 +499,7 @@
             document.getElementById('dynamicFormContainer').style.display = 'block';
 
             document.getElementById('formPageTitle').innerText = moduleTitle;
-            document.getElementById('formSubKeyText').innerHTML = `নির্বাচিত সাব-মডিউল আইডি: <b>${moduleKey}</b>`;
+            document.getElementById('formSubKeyText').innerHTML = `নির্বাচিত সাব-মডিউল আইডি: <b>${moduleKey}</b> (এখানে এই মডিউলের নিজস্ব কোড বা ফর্ম যুক্ত করতে পারেন)`;
             
             window.scrollTo(0, 0);
         }
@@ -505,8 +518,8 @@
         function loadCareerPage() {
             if(sidebarOpenCheck()) toggleSidebar();
             
-            document.getElementById('dashboardView').style.display = 'none';
             document.getElementById('dynamicFormContainer').style.display = 'block';
+            document.getElementById('dashboardView').style.display = 'none';
 
             document.getElementById('formPageTitle').innerText = "ক্যারিয়ার ও চাকরির সুযোগ";
             document.getElementById('formSubKeyText').innerHTML = "আমাদের প্রতিষ্ঠানে চাকরির জন্য নিচের আবেদন ফর্মটি পূরণ করুন:";
