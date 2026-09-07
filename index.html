@@ -66,6 +66,7 @@
             left: 0;
             background: linear-gradient(180deg, #111, #1e3c72);
             overflow-x: hidden;
+            overflow-y: auto;
             transition: 0.4s;
             padding-top: 60px;
             box-shadow: 5px 0 15px rgba(0,0,0,0.4);
@@ -76,7 +77,9 @@
             text-decoration: none;
             font-size: 17px;
             color: #cfd8dc;
-            display: block;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             transition: 0.3s;
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
@@ -85,7 +88,7 @@
         .sidebar .close-btn { position: absolute; top: 10px; right: 20px; font-size: 32px; color: white; border: none; background: none; }
         
         .submenu-list { list-style: none; padding-left: 20px; margin: 0; display: none; background: rgba(0,0,0,0.2); }
-        .submenu-list li a { font-size: 15px; padding: 12px 15px; color: #b0bec5; border-bottom: none; }
+        .submenu-list li a { font-size: 15px; padding: 12px 15px; color: #b0bec5; border-bottom: none; display: block; }
 
         /* মূল কনটেন্ট এরিয়া ও বড় স্পেসিং */
         .main-content { padding: 50px 25px; max-width: 1200px; margin: 0 auto; }
@@ -132,8 +135,18 @@
         th, td { padding: 18px; border-bottom: 1px solid #edf2f7; font-size: 17px; }
         th { background-color: var(--secondary-color); color: #1e3c72; font-weight: bold; font-size: 18px; }
 
-        .about-us, .notice-board { background: var(--card-bg); padding: 35px; border-radius: 18px; text-align: center; box-shadow: 0 8px 25px rgba(0,0,0,0.08); margin-bottom: 35px; }
-        .about-us p, .notice-board p { line-height: 1.9; color: #444; font-size: 18px; margin: 0; }
+        /* একাধিক লাইনের জন্য অটো-হাইট ফ্লেক্সিবল বক্স */
+        .about-us, .notice-board { 
+            background: var(--card-bg); 
+            padding: 35px; 
+            border-radius: 18px; 
+            text-align: center; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08); 
+            margin-bottom: 35px; 
+            height: auto;
+            min-height: 120px;
+        }
+        .about-us p, .notice-board p { line-height: 1.9; color: #444; font-size: 18px; margin: 0; word-break: break-word; }
 
         /* লগইন পপআপ মডাল */
         .modal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); justify-content: center; align-items: center; }
@@ -170,7 +183,7 @@
 
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
-        window.firebaseApp = app; // গ্লোবালি ব্যবহারের জন্য
+        window.firebaseApp = app;
     </script>
     <!-- ======================================================= -->
 
@@ -225,7 +238,7 @@
     <div id="mySidebar" class="sidebar">
         <button class="close-btn" onclick="toggleSidebar()">&times;</button>
         
-        <a href="#" onclick="toggleSubMenu('sub1')" id="menuTitle1">🏠 ১. হোম মডিউল ও কাস্টমাইজ ▼</a>
+        <a href="#" onclick="toggleSubMenu('sub1')" id="menuTitle1"><span>🏠 ১. হোম মডিউল ও কাস্টমাইজ</span> <span>▼</span></a>
         <ul id="sub1" class="submenu-list">
             <li><a href="#" onclick="loadSubModuleContent('Home-1', 'প্রতিষ্ঠান ও ব্যানার পরিবর্তন')">প্রতিষ্ঠান ও ব্যানার পরিবর্তন</a></li>
             <li><a href="#" onclick="loadSubModuleContent('Home-2', 'ব্রাঞ্চ ও ঠিকানা পরিবর্তন')">ব্রাঞ্চ ও ঠিকানা পরিবর্তন</a></li>
@@ -235,7 +248,7 @@
             <li><a href="#" onclick="loadSubModuleContent('Home-6', 'নোটিশ সম্পাদনা')">নোটিশ সম্পাদনা</a></li>
         </ul>
 
-        <a href="#" onclick="toggleSubMenu('sub2')" id="menuTitle2">👥 ২. সদস্য ব্যবস্থাপনা ▼</a>
+        <a href="#" onclick="toggleSubMenu('sub2')" id="menuTitle2"><span>👥 ২. সদস্য ব্যবস্থাপনা</span> <span>▼</span></a>
         <ul id="sub2" class="submenu-list">
             <li><a href="#" onclick="loadSubModuleContent('Member-1', 'নতুন রেজিস্ট্রেশন')">নতুন রেজিস্ট্রেশন</a></li>
             <li><a href="#" onclick="loadSubModuleContent('Member-2', 'সার্চ/আপডেট')">সার্চ/আপডেট</a></li>
@@ -244,7 +257,7 @@
             <li><a href="#" onclick="loadSubModuleContent('Member-5', 'ট্রান্সফার')">ট্রান্সফার</a></li>
         </ul>
 
-        <a href="#" onclick="toggleSubMenu('sub3')" id="menuTitle3">💰 ৩. ডিপোজিট ব্যবস্থাপনা ▼</a>
+        <a href="#" onclick="toggleSubMenu('sub3')" id="menuTitle3"><span>💰 ৩. ডিপোজিট ব্যবস্থাপনা</span> <span>▼</span></a>
         <ul id="sub3" class="submenu-list">
             <li><a href="#" onclick="loadSubModuleContent('Deposit-1', 'নতুন ডিপোজিট')">নতুন ডিপোজিট</a></li>
             <li><a href="#" onclick="loadSubModuleContent('Deposit-2', 'সার্চ/আপডেট')">সার্চ/আপডেট</a></li>
@@ -253,7 +266,7 @@
             <li><a href="#" onclick="loadSubModuleContent('Deposit-5', 'হিস্টরি')">হিস্টরি</a></li>
         </ul>
 
-        <a href="#" onclick="toggleSubMenu('sub4')" id="menuTitle4">📈 ৪. সেভিংস অ্যান্ড ডিপিএস ▼</a>
+        <a href="#" onclick="toggleSubMenu('sub4')" id="menuTitle4"><span>📈 ৪. সেভিংস অ্যান্ড ডিপিএস</span> <span>▼</span></a>
         <ul id="sub4" class="submenu-list">
             <li><a href="#" onclick="loadSubModuleContent('Savings-1', 'সেভিং/ডিপিএস')">সেভিং/ডিপিএস</a></li>
             <li><a href="#" onclick="loadSubModuleContent('Savings-2', 'সার্চ/আপডেট')">সার্চ/আপডেট</a></li>
@@ -262,7 +275,7 @@
             <li><a href="#" onclick="loadSubModuleContent('Savings-5', 'হিস্টরি')">হিস্টরি</a></li>
         </ul>
 
-        <a href="#" onclick="toggleSubMenu('sub5')" id="menuTitle5">📝 ৫. লোন ব্যবস্থাপনা ▼</a>
+        <a href="#" onclick="toggleSubMenu('sub5')" id="menuTitle5"><span>📝 ৫. লোন ব্যবস্থাপনা</span> <span>▼</span></a>
         <ul id="sub5" class="submenu-list">
             <li><a href="#" onclick="loadSubModuleContent('Loan-1', 'লোন আবেদন')">লোন আবেদন</a></li>
             <li><a href="#" onclick="loadSubModuleContent('Loan-2', 'লোন অনুমোদন')">লোন অনুমোদন</a></li>
@@ -271,7 +284,7 @@
             <li><a href="#" onclick="loadSubModuleContent('Loan-5', 'হিস্টোরি')">হিস্টোরি</a></li>
         </ul>
 
-        <a href="#" onclick="toggleSubMenu('sub6')" id="menuTitle6">📊 ৬. হিসাব ও রিপোর্ট ▼</a>
+        <a href="#" onclick="toggleSubMenu('sub6')" id="menuTitle6"><span>📊 ৬. হিসাব ও রিপোর্ট</span> <span>▼</span></a>
         <ul id="sub6" class="submenu-list">
             <li><a href="#" onclick="loadSubModuleContent('Report-1', 'ক্যাশ গ্রহণ')">ক্যাশ গ্রহণ</a></li>
             <li><a href="#" onclick="loadSubModuleContent('Report-2', 'ক্যাশ বিতরণ')">ক্যাশ বিতরণ</a></li>
@@ -280,7 +293,7 @@
             <li><a href="#" onclick="loadSubModuleContent('Report-5', 'মাসিক/বাৎসরিক রিপোর্ট')">মাসিক/বাৎসরিক রিপোর্ট</a></li>
         </ul>
 
-        <a href="#" onclick="toggleSubMenu('sub7')" id="menuTitle7">💸 ৭. লেনদেন ▼</a>
+        <a href="#" onclick="toggleSubMenu('sub7')" id="menuTitle7"><span>💸 ৭. লেনদেন</span> <span>▼</span></a>
         <ul id="sub7" class="submenu-list">
             <li><a href="#" onclick="loadSubModuleContent('Trans-1', 'কালেকশন')">কালেকশন</a></li>
             <li><a href="#" onclick="loadSubModuleContent('Trans-2', 'সঞ্চয় ফেরত')">সঞ্চয় ফেরত</a></li>
@@ -289,7 +302,7 @@
             <li><a href="#" onclick="loadSubModuleContent('Trans-5', 'পেইড গ্রাহক')">পেইড গ্রাহক</a></li>
         </ul>
 
-        <a href="#" onclick="toggleSubMenu('sub8')" id="menuTitle8">⚙️ ৮. HR-setting ▼</a>
+        <a href="#" onclick="toggleSubMenu('sub8')" id="menuTitle8"><span>⚙️ ৮. HR-setting</span> <span>▼</span></a>
         <ul id="sub8" class="submenu-list">
             <li><a href="#" onclick="loadSubModuleContent('Settings-1', 'HR-user setup/transfer')">HR-user setup/transfer</a></li>
             <li><a href="#" onclick="loadSubModuleContent('Settings-2', 'HR-permission')">HR-permission</a></li>
@@ -309,7 +322,6 @@
                 <p id="displayAddress">ঠিকানা ও ব্রাঞ্চ: ঢাকা, বাংলাদেশ</p>
             </div>
 
-            <!-- ডিরেক্টর প্যানেল (বড় সাইজ ও ফাঁকা ফাঁকা) -->
             <div class="directors-container">
                 <div class="director-card">
                     <img src="https://via.placeholder.com/120" alt="Director">
@@ -355,7 +367,7 @@
 
                 <div class="notice-board">
                     <h2 class="section-title" style="margin-top:0;">বিজ্ঞপ্তি</h2>
-                    <p id="noticeText">এখানে সমিতির সকল জরুরি নোটিশ ও বিজ্ঞপ্তি প্রদর্শিত হবে।</p>
+                    <p id="noticeText">এখানে সমিতির সকল জরুরি নোটিশ ও বিজ্ঞপ্তি প্রদর্শিত হবে। একাধিক লাইন যুক্ত হলে বক্স স্বয়ংক্রিয়ভাবে বড় হয়ে যাবে।</p>
                 </div>
             </div>
         </div>
@@ -367,22 +379,20 @@
                 <button class="back-page-btn" onclick="goToDashboard()">Back (ড্যাশবোর্ডে)</button>
             </div>
             
-            <!-- ================================================= -->
-            <!-- মডিউল ভিত্তিক কাজের নির্দিষ্ট সেকশন শুরু -->
-            <!-- ================================================= -->
+            <!-- ================================================================= -->
+            <!-- [START]: মডিউল ভিত্তিক কাজের নির্দিষ্ট সেকশন - এখান থেকে কপি/পেস্ট বা পরিবর্তন করুন -->
+            <!-- ================================================================= -->
             <div style="background: white; padding: 35px; border-radius: 18px; box-shadow: 0 6px 25px rgba(0,0,0,0.08);">
                 <p id="formSubKeyText" style="color: #666; margin-bottom: 20px; font-size: 16px;"></p>
                 
-                <!-- সুনির্দিষ্ট মডিউল ফর্ম কন্টেইনার (এখানে আপনি আপনার কোড বসাবেন এবং ডিলিট করতে পারবেন) -->
-                <div id="moduleSpecificFormArea" style="border: 2px dashed #2a5298; padding: 30px; border-radius: 12px; background: #f8fafc;">
-                    <p style="color: #1e3c72; font-weight: bold; font-size: 16px;">[চিহ্নিত এলাকা]: এই নির্দিষ্ট জায়গায় আপনার মডিউলের ফর্মের কোড বসান।</p>
-                    <input type="text" placeholder="নমুনা ইনপুট ফিল্ড..." style="width: 100%; padding: 12px; margin-top: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px;">
-                    <button style="margin-top: 20px; padding: 12px 25px; background: #2a5298; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold;">সংরক্ষণ করুন</button>
+                <!-- ডাইনামিক সাব-মডিউল কন্টেইনার (ব্রাঞ্চ ম্যানেজমেন্ট বা অন্যান্য ফর্ম এখানে লোড হবে) -->
+                <div id="moduleSpecificFormArea">
+                    <p style="color: #1e3c72; font-weight: bold; font-size: 16px;">[ডিফল্ট নমুনা ফর্ম এরিয়া]</p>
                 </div>
             </div>
-            <!-- ================================================= -->
-            <!-- মডিউল ভিত্তিক কাজের নির্দিষ্ট সেকশন শেষ -->
-            <!-- ================================================= -->
+            <!-- ================================================================= -->
+            <!-- [END]: মডিউল ভিত্তিক কাজের নির্দিষ্ট সেকশন শেষ -->
+            <!-- ================================================================= -->
 
         </div>
 
@@ -400,9 +410,13 @@
     </div>
 
     <script>
+        // বর্তমান পেজ বা স্টেট মনে রাখার জন্য ভেরিয়েবল
+        let currentActiveModuleKey = null;
+
         window.onload = function() {
             applyConfigNames();
             checkPersistentLogin();
+            restoreActivePageState();
         };
 
         function applyConfigNames() {
@@ -410,24 +424,42 @@
             keys.forEach((k, index) => {
                 const menuEl = document.getElementById(`menuTitle${index + 1}`);
                 if(menuEl) {
-                    menuEl.innerHTML = appConfig.modules[k].title + " ▼";
+                    const titleSpan = menuEl.querySelectorAll('span')[0];
+                    if(titleSpan) titleSpan.innerHTML = appConfig.modules[k].title;
                 }
             });
         }
 
-        // ২৪ ঘণ্টা পর স্বয়ংক্রিয় লগআউট লজিক
+        // ২৪ ঘণ্টা পর স্বয়ংক্রিয় লগআউট লজিক ও স্টেট রিফ্রেশ হ্যান্ডলিং
         function checkPersistentLogin() {
             const loginTime = localStorage.getItem('loginTime');
             const now = new Date().getTime();
             
-            // ২৪ ঘণ্টা = ৮৬৪০০০০০ মিলি সেকেন্ড
             if(loginTime && (now - loginTime < 86400000)) {
                 document.getElementById('threeDotMenu').style.display = 'block';
                 document.getElementById('authButtonContainer').innerHTML = `<button class="logout-btn" onclick="performLogout()">Logout</button>`;
             } else {
                 localStorage.removeItem('loginTime');
+                localStorage.removeItem('activeModuleKey');
+                localStorage.removeItem('activeModuleTitle');
                 document.getElementById('threeDotMenu').style.display = 'none';
                 document.getElementById('authButtonContainer').innerHTML = `<button class="login-btn" onclick="openLoginModal()">Login</button>`;
+            }
+        }
+
+        // রিফ্রেশ করার পরেও আগের পেজে বা সাব-মডিউলে থাকার ফাংশন
+        function restoreActivePageState() {
+            const savedModuleKey = localStorage.getItem('activeModuleKey');
+            const savedModuleTitle = localStorage.getItem('activeModuleTitle');
+            const loginTime = localStorage.getItem('loginTime');
+            const now = new Date().getTime();
+
+            if (loginTime && (now - loginTime < 86400000) && savedModuleKey && savedModuleTitle) {
+                if (savedModuleKey === 'CAREER') {
+                    loadCareerPage(true);
+                } else {
+                    loadSubModuleContent(savedModuleKey, savedModuleTitle, true);
+                }
             }
         }
 
@@ -455,6 +487,8 @@
 
         function performLogout() {
             localStorage.removeItem('loginTime');
+            localStorage.removeItem('activeModuleKey');
+            localStorage.removeItem('activeModuleTitle');
             checkPersistentLogin();
             goToDashboard();
             alert('লগআউট করা হয়েছে!');
@@ -477,13 +511,15 @@
             submenu.style.display = (submenu.style.display === "block") ? "none" : "block";
         }
 
-        // আলাদা আলাদা মডিউল লোড করার সুনির্দিষ্ট ফাংশন
-        function loadSubModuleContent(moduleKey, moduleTitle) {
+        // =========================================================================
+        // [MODULE WORKSPACE SECTION]: আলাদা আলাদা মডিউলের কাজ সম্পন্ন করার মূল ফাংশন
+        // =========================================================================
+        function loadSubModuleContent(moduleKey, moduleTitle, isRestoring = false) {
             let parentModuleCode = "mod1";
             if(moduleKey.startsWith("Member")) parentModuleCode = "mod2";
             else if(moduleKey.startsWith("Deposit")) parentModuleCode = "mod3";
             else if(moduleKey.startsWith("Savings")) parentModuleCode = "mod4";
-            else if(moduleKey.startsWith("Loan")) parentModuleCode, parentModuleCode = "mod5";
+            else if(moduleKey.startsWith("Loan")) parentModuleCode = "mod5";
             else if(moduleKey.startsWith("Report")) parentModuleCode = "mod6";
             else if(moduleKey.startsWith("Trans")) parentModuleCode = "mod7";
             else if(moduleKey.startsWith("Settings")) parentModuleCode = "mod8";
@@ -493,18 +529,42 @@
                 return;
             }
 
-            if(sidebarOpenCheck()) toggleSidebar();
+            if(!isRestoring && sidebarOpenCheck()) toggleSidebar();
+
+            // স্টেট সেভ করা যাতে রিফ্রেশ দিলে পেজ হারায় না
+            localStorage.setItem('activeModuleKey', moduleKey);
+            localStorage.setItem('activeModuleTitle', moduleTitle);
 
             document.getElementById('dashboardView').style.display = 'none';
             document.getElementById('dynamicFormContainer').style.display = 'block';
 
             document.getElementById('formPageTitle').innerText = moduleTitle;
-            document.getElementById('formSubKeyText').innerHTML = `নির্বাচিত সাব-মডিউল আইডি: <b>${moduleKey}</b> (এখানে এই মডিউলের নিজস্ব কোড বা ফর্ম যুক্ত করতে পারেন)`;
+            document.getElementById('formSubKeyText').innerHTML = `সাব-মডিউল আইডি: <b>${moduleKey}</b>`;
             
-            window.scrollTo(0, 0);
+            // নির্দিষ্ট মডিউলের জন্য আলাদা ফর্ম লোড করার লজিক
+            const formArea = document.getElementById('moduleSpecificFormArea');
+            
+            if (moduleKey === 'Settings-3') {
+                // ব্রাঞ্চ ম্যানেজমেন্ট ফর্ম ও লিস্ট ইন্টারফেস
+                renderBranchManagementUI(formArea);
+            } else {
+                // অন্যান্য সাধারণ মডিউলের জন্য ডিফল্ট টেমপ্লেট
+                formArea.innerHTML = `
+                    <div style="border: 2px dashed #2a5298; padding: 25px; border-radius: 12px; background: #f8fafc;">
+                        <p style="color: #1e3c72; font-weight: bold; font-size: 16px;">[${moduleTitle}] এর কাজের নির্দিষ্ট জায়গা:</p>
+                        <input type="text" placeholder="নমুনা ইনপুট ফিল্ড..." style="width: 100%; padding: 12px; margin-top: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; box-sizing: border-box;">
+                        <button style="margin-top: 15px; padding: 12px 25px; background: #2a5298; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold;">সংরক্ষণ করুন</button>
+                    </div>
+                `;
+            }
+            
+            if(!isRestoring) window.scrollTo(0, 0);
         }
 
+        // ড্যাশবোর্ডে ফিরে যাওয়ার ফাংশন
         function goToDashboard() {
+            localStorage.removeItem('activeModuleKey');
+            localStorage.removeItem('activeModuleTitle');
             document.getElementById('dynamicFormContainer').style.display = 'none';
             document.getElementById('dashboardView').style.display = 'block';
             window.scrollTo(0, 0);
@@ -515,16 +575,181 @@
             return sb.style.width === "280px";
         }
 
-        function loadCareerPage() {
-            if(sidebarOpenCheck()) toggleSidebar();
+        function loadCareerPage(isRestoring = false) {
+            if(!isRestoring && sidebarOpenCheck()) toggleSidebar();
             
-            document.getElementById('dynamicFormContainer').style.display = 'block';
+            localStorage.setItem('activeModuleKey', 'CAREER');
+            localStorage.setItem('activeModuleTitle', 'ক্যারিয়ার ও চাকরির সুযোগ');
+
             document.getElementById('dashboardView').style.display = 'none';
+            document.getElementById('dynamicFormContainer').style.display = 'block';
 
             document.getElementById('formPageTitle').innerText = "ক্যারিয়ার ও চাকরির সুযোগ";
             document.getElementById('formSubKeyText').innerHTML = "আমাদের প্রতিষ্ঠানে চাকরির জন্য নিচের আবেদন ফর্মটি পূরণ করুন:";
             
+            const formArea = document.getElementById('moduleSpecificFormArea');
+            formArea.innerHTML = `
+                <div style="border: 2px dashed #2a5298; padding: 25px; border-radius: 12px; background: #f8fafc;">
+                    <input type="text" placeholder="আপনার নাম..." style="width:15px; width:100%; padding:12px; margin-bottom:10px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+                    <input type="text" placeholder="মোবাইল নম্বর..." style="width:100%; padding:12px; margin-bottom:10px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+                    <button style="padding: 12px 25px; background: #2a5298; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">আবেদন জমা দিন</button>
+                </div>
+            `;
+            if(!isRestoring) window.scrollTo(0, 0);
+        }
+        // =========================================================================
+
+        // =========================================================================
+        // ব্রাঞ্চ ম্যানেজমেন্ট (HR-branch management) মডিউলের নিজস্ব ফাংশন ও ইউআই
+        // =========================================================================
+        let branchList = [
+            { code: "BR-1001", name: "প্রধান শাখা", address: "ঢাকা", mobile: "01700000000", email: "head@somiti.com" }
+        ];
+        let editingIndex = null;
+
+        function renderBranchManagementUI(container) {
+            container.innerHTML = `
+                <div style="background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #cbd5e1; position: relative; margin-bottom: 30px;">
+                    <h3 style="margin-top:0; color: #1e3c72; border-bottom: 2px solid #cbd5e1; padding-bottom: 8px;">ব্রাঞ্চ ম্যানেজমেন্ট</h3>
+                    
+                    <!-- ডান পাশের উপরে স্বয়ংক্রিয় ব্রাঞ্চ কোড প্রদর্শন -->
+                    <div style="position: absolute; top: 20px; right: 20px; background: #e3f2fd; padding: 6px 15px; border-radius: 6px; border: 1px solid #90caf9; font-weight: bold; color: #1e3c72;">
+                        কোড: <span id="autoBranchCode">${editingIndex !== null ? branchList[editingIndex].code : 'BR-' + Math.floor(1000 + Math.random() * 9000)}</span>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">ব্রাঞ্চের নাম:</label>
+                        <input type="text" id="branchNameInput" placeholder="ব্রাঞ্চের নাম লিখুন..." style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">ব্রাঞ্চের ঠিকানা:</label>
+                        <input type="text" id="branchAddressInput" placeholder="ঠিকানা লিখুন..." style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">ব্রাঞ্চের মোবাইল নম্বর:</label>
+                        <input type="text" id="branchMobileInput" placeholder="মোবাইল নম্বর..." style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">ব্রাঞ্চের ই-মেইল:</label>
+                        <input type="email" id="branchEmailInput" placeholder="ই-মেইল ঠিকানা..." style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+                    </div>
+
+                    <button onclick="saveBranchData()" style="padding: 12px 30px; background: #1e3c72; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px;">সেভ বা আপডেট করুন</button>
+                </div>
+
+                <!-- সার্চ ও প্রিন্ট সেকশন -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                    <input type="text" id="branchSearchInput" onkeyup="searchBranchTable()" placeholder="ব্রাঞ্চ কোড বা নাম দিয়ে সার্চ করুন..." style="padding: 10px; width: 300px; border: 1px solid #cbd5e1; border-radius: 8px;">
+                    <button onclick="printBranchList()" style="padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">প্রিন্ট লিস্ট</button>
+                </div>
+
+                <!-- ব্রাঞ্চ লিস্ট টেবিল -->
+                <div class="table-container" id="printableBranchTable">
+                    <table style="width:100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: #e3f2fd; color: #1e3c72;">
+                                <th style="padding: 12px; border: 1px solid #cbd5e1;">ব্রাঞ্চ কোড</th>
+                                <th style="padding: 12px; border: 1px solid #cbd5e1;">ব্রাঞ্চের নাম</th>
+                                <th style="padding: 12px; border: 1px solid #cbd5e1;">ঠিকানা</th>
+                                <th style="padding: 12px; border: 1px solid #cbd5e1;">মোবাইল</th>
+                                <th style="padding: 12px; border: 1px solid #cbd5e1;">ই-মেইল</th>
+                                <th style="padding: 12px; border: 1px solid #cbd5e1;">একশন</th>
+                            </tr>
+                        </thead>
+                        <tbody id="branchTableBody">
+                            <!-- ডাইনামিকালি পপুলেট হবে -->
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            populateBranchTable();
+        }
+
+        function populateBranchTable(filteredData = branchList) {
+            const tbody = document.getElementById('branchTableBody');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            
+            if(filteredData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="padding: 15px; text-align: center; color: #777;">কোনো ব্রাঞ্চের তথ্য পাওয়া যায়নি</td></tr>`;
+                return;
+            }
+
+            filteredData.forEach((item, index) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="padding: 12px; border: 1px solid #cbd5e1; font-weight:bold;">${item.code}</td>
+                        <td style="padding: 12px; border: 1px solid #cbd5e1;">${item.name}</td>
+                        <td style="padding: 12px; border: 1px solid #cbd5e1;">${item.address}</td>
+                        <td style="padding: 12px; border: 1px solid #cbd5e1;">${item.mobile}</td>
+                        <td style="padding: 12px; border: 1px solid #cbd5e1;">${item.email}</td>
+                        <td style="padding: 12px; border: 1px solid #cbd5e1;">
+                            <button onclick="editBranch(${index})" style="padding: 6px 12px; background: #ffc107; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-right: 5px;">এডিট</button>
+                            <button onclick="deleteBranch(${index})" style="padding: 6px 12px; background: #ff5252; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">ডিলিট</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function saveBranchData() {
+            const code = document.getElementById('autoBranchCode').innerText;
+            const name = document.getElementById('branchNameInput').value.trim();
+            const address = document.getElementById('branchAddressInput').value.trim();
+            const mobile = document.getElementById('branchMobileInput').value.trim();
+            const email = document.getElementById('branchEmailInput').value.trim();
+
+            if(!name || !address || !mobile) {
+                alert('অনুগ্রহ করে ব্রাঞ্চের নাম, ঠিকানা এবং মোবাইল নম্বর পূরণ করুন!');
+                return;
+            }
+
+            if(editingIndex !== null) {
+                branchList[editingIndex] = { code, name, address, mobile, email };
+                editingIndex = null;
+                alert('ব্রাঞ্চ তথ্য সফলভাবে আপডেট করা হয়েছে!');
+            } else {
+                branchList.push({ code, name, address, mobile, email });
+                alert('নতুন ব্রাঞ্চ সফলভাবে সেভ করা হয়েছে!');
+            }
+
+            renderBranchManagementUI(document.getElementById('moduleSpecificFormArea'));
+        }
+
+        function editBranch(index) {
+            editingIndex = index;
+            const item = branchList[index];
+            document.getElementById('autoBranchCode').innerText = item.code;
+            document.getElementById('branchNameInput').value = item.name;
+            document.getElementById('branchAddressInput').value = item.address;
+            document.getElementById('branchMobileInput').value = item.mobile;
+            document.getElementById('branchEmailInput').value = item.email;
             window.scrollTo(0, 0);
+        }
+
+        function deleteBranch(index) {
+            if(confirm('আপনি কি নিশ্চিতভাবে এই ব্রাঞ্চটি ডিলিট করতে চান?')) {
+                branchList.splice(index, 1);
+                renderBranchManagementUI(document.getElementById('moduleSpecificFormArea'));
+            }
+        }
+
+        function searchBranchTable() {
+            const query = document.getElementById('branchSearchInput').value.toLowerCase();
+            const filtered = branchList.filter(b => b.code.toLowerCase().includes(query) || b.name.toLowerCase().includes(query));
+            populateBranchTable(filtered);
+        }
+
+        function printBranchList() {
+            const printContent = document.getElementById('printableBranchTable').innerHTML;
+            const originalContent = document.body.innerHTML;
+            document.body.innerHTML = `<h2 style="text-align:center;">ব্রাঞ্চ তালিকা রিপোর্ট</h2>` + printContent;
+            window.print();
+            document.body.innerHTML = originalContent;
+            window.location.reload();
         }
     </script>
 </body>
