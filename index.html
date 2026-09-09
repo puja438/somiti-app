@@ -163,7 +163,7 @@
 </head>
 <body>
 
-    <!-- ================= FIREBASE SDK (v12.18.0) & FIRESTORE SETUP ================= -->
+    <!-- ================= FIREBASE SDK & FIRESTORE SETUP ================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
@@ -183,7 +183,6 @@
         const analytics = getAnalytics(app);
         const db = getFirestore(app);
 
-        // গ্লোবালি ব্যবহারের জন্য উইন্ডোতে যুক্ত করা হলো
         window.firebaseApp = app;
         window.db = db;
         window.collection = collection;
@@ -193,7 +192,6 @@
         window.deleteDoc = deleteDoc;
         window.doc = doc;
     </script>
-    <!-- ======================================================= -->
 
     <!-- ================= CONFIGURATION & PERMISSIONS ================= -->
     <script>
@@ -218,7 +216,6 @@
             }
         };
     </script>
-    <!-- ============================================================== -->
 
     <!-- হেডার সেকশন -->
     <header>
@@ -317,32 +314,32 @@
     <!-- মূল পেজ কনটেন্ট এরিয়া -->
     <div class="main-content" id="mainContentArea">
         
-        <!-- ড্যাশবোর্ড ভিউ -->
+        <!-- ড্যাশবোর্ড ভিউ (এখানে প্রতিষ্ঠানের নাম, ঠিকানা, ডিরেক্টর প্যানেল, কর্মী তালিকা, আমাদের কথা এবং নোটিশ বোর্ড ফাঁকা রাখা হয়েছে) -->
         <div id="dashboardView">
+            <!-- ======================================================== -->
+            <!-- [চিহ্নিত স্থান ১]: প্রতিষ্ঠানের নাম ও ঠিকানা (Home-1 / Home-2 এর মাধ্যমে আপডেট হবে) -->
+            <!-- ======================================================== -->
             <div class="hero-section">
-                <h2 id="displayOrgName">প্রতিষ্ঠানের নাম</h2>
-                <p id="displayAddress">ঠিকানা ও ব্রাঞ্চ: ঢাকা, বাংলাদেশ</p>
+                <h2 id="displayOrgName">প্রতিষ্ঠانের নাম</h2>
+                <p id="displayAddress">ঠিকানা ও ব্রাঞ্চ: -</p>
             </div>
 
-            <div class="directors-container">
+            <!-- ======================================================== -->
+            <!-- [চিহ্নিত স্থান ২]: ডিরেক্টর প্যানেল (Home-3 এর মাধ্যমে আপডেট হবে) -->
+            <!-- ======================================================== -->
+            <div class="directors-container" id="displayDirectorsContainer">
+                <!-- ডিরেক্টর কার্ডগুলো ডায়নামিকালি যুক্ত হবে অথবা ফাঁকা থাকবে -->
                 <div class="director-card">
                     <img src="https://via.placeholder.com/120" alt="Director">
-                    <h3>করীম খনিন</h3>
-                    <p>Director</p>
-                </div>
-                <div class="director-card">
-                    <img src="https://via.placeholder.com/120" alt="Director">
-                    <h3>কবিৎ জমাম</h3>
-                    <p>Director</p>
-                </div>
-                <div class="director-card">
-                    <img src="https://via.placeholder.com/120" alt="Director">
-                    <h3>কবিৎ হববা</h3>
+                    <h3>-</h3>
                     <p>Director</p>
                 </div>
             </div>
 
             <div class="container">
+                <!-- ======================================================== -->
+                <!-- [চিহ্নিত স্থান ৩]: কর্মী তালিকা (Home-4 এর মাধ্যমে আপডেট হবে) -->
+                <!-- ======================================================== -->
                 <h2 class="section-title">কর্মী তালিকা</h2>
                 <div class="table-container">
                     <table>
@@ -354,22 +351,26 @@
                                 <th>পদবী</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr><td>করীম খাসন</td><td>আমল</td><td>০১৩২৩৭৭৯১৩৩</td><td>পদবী পদবী</td></tr>
-                            <tr><td>কারম কলবন</td><td>ইনমজল</td><td>০১৩২৭৭৪২০১৭</td><td>পদবী পদবী</td></tr>
-                            <tr><td>কস্মিম হানন</td><td>গ্রামল</td><td>০১৩২০৭৩২২১৩</td><td>পদবী পদবী</td></tr>
+                        <tbody id="displayStaffTableBody">
+                            <tr><td colspan="4" style="color: #777; text-align: center;">কোনো কর্মী তালিকা পাওয়া যায়নি</td></tr>
                         </tbody>
                     </table>
                 </div>
 
+                <!-- ======================================================== -->
+                <!-- [চিহ্নিত স্থান ৪]: আমাদের কথা (Home-5 এর মাধ্যমে আপডেট হবে) -->
+                <!-- ======================================================== -->
                 <div class="about-us">
                     <h2 class="section-title" style="margin-top:0;">আমাদের কথা</h2>
-                    <p>প্রতিষ্ঠানের নাম সারান ফল্লো, তাড়াহী ওয়ংহত ছল, যহিন হরে দ্যুতি হলো টিকলানা হায় বরি...</p>
+                    <p id="displayAboutUsText">এখানে প্রতিষ্ঠানের বিবরণ যুক্ত হবে...</p>
                 </div>
 
+                <!-- ======================================================== -->
+                <!-- [চিহ্নিত স্থান ৫]: নোটিশ বোর্ড (Home-6 এর মাধ্যমে আপডেট হবে) -->
+                <!-- ======================================================== -->
                 <div class="notice-board">
                     <h2 class="section-title" style="margin-top:0;">বিজ্ঞপ্তি</h2>
-                    <p>এখানে সমিতির সকল জরুরি নোটিশ ও বিজ্ঞপ্তি প্রদর্শিত হবে।</p>
+                    <p id="displayNoticeText">এখানে সমিতির সকল জরুরি নোটিশ ও বিজ্ঞপ্তি প্রদর্শিত হবে।</p>
                 </div>
             </div>
         </div>
@@ -420,7 +421,6 @@
             });
         }
 
-        // ২৪ ঘণ্টার জন্য পারসিস্টেন্ট লগইন চেক
         function checkPersistentLogin() {
             const loginTime = localStorage.getItem('loginTime');
             const now = new Date().getTime();
@@ -494,9 +494,6 @@
             submenu.style.display = (submenu.style.display === "block") ? "none" : "block";
         }
 
-        // =========================================================================
-        // মডিউল লোডিং সেকশন
-        // =========================================================================
         function loadSubModuleContent(moduleKey, moduleTitle, isRestoring = false) {
             let parentModuleCode = "mod1";
             if(moduleKey.startsWith("Member")) parentModuleCode = "mod2";
@@ -525,7 +522,9 @@
             
             const formArea = document.getElementById('moduleSpecificFormArea');
             
-            if (moduleKey === 'Settings-3') {
+            if (moduleKey === 'Settings-1') {
+                renderUserSetupPermissionUI(formArea);
+            } else if (moduleKey === 'Settings-3') {
                 renderBranchManagementUI(formArea);
             } else {
                 renderGenericModuleUI(formArea, moduleKey, moduleTitle);
@@ -581,8 +580,43 @@
         }
 
         // =========================================================================
-        // জেনেরিক ফায়ারবেস ইন্টিগ্রেটেড ফর্ম ও লিস্ট ভিউ
+        // HR-user setup & permissions (Settings-1) - সাব-মডিউল পারমিশন সহ ইউজার সেটআপ
         // =========================================================================
+        function renderUserSetupPermissionUI(container) {
+            container.innerHTML = `
+                <div style="background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #cbd5e1; margin-bottom: 25px;">
+                    <h3 style="margin-top:0; color: #1e3c72;">নতুন ইউজার ও সাব-মডিউল পারমিশন সেটআপ</h3>
+                    <input type="text" id="setupUsername" placeholder="ইউজার আইডি বা নাম..." style="width:100%; padding:12px; margin-bottom:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+                    
+                    <label style="display:block; font-weight:bold; margin-bottom:8px; color:#1e3c72;">যে যে সাব-মডিউলে এই ইউজার কাজ করতে পারবে তা সিলেক্ট করুন:</label>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin-bottom: 15px; background: white; padding: 15px; border-radius: 8px; border: 1px solid #cbd5e1;">
+                        <label><input type="checkbox" class="sub-perm-check" value="Home-1"> প্রতিষ্ঠান ও ব্যানার পরিবর্তন</label>
+                        <label><input type="checkbox" class="sub-perm-check" value="Home-2"> ব্রাঞ্চ ও ঠিকানা পরিবর্তন</label>
+                        <label><input type="checkbox" class="sub-perm-check" value="Home-3"> ডিরেক্টর প্যানেল আপডেট</label>
+                        <label><input type="checkbox" class="sub-perm-check" value="Home-4"> কর্মী তালিকা আপডেট</label>
+                        <label><input type="checkbox" class="sub-perm-check" value="Home-5"> আমাদের কথা</label>
+                        <label><input type="checkbox" class="sub-perm-check" value="Home-6"> নোটিশ সম্পাদনা</label>
+                        <label><input type="checkbox" class="sub-perm-check" value="Member-1"> সদস্য রেজিস্ট্রেশন</label>
+                        <label><input type="checkbox" class="sub-perm-check" value="Deposit-1"> নতুন ডিপোজিট</label>
+                        <label><input type="checkbox" class="sub-perm-check" value="Loan-1"> লোন আবেদন</label>
+                        <label><input type="checkbox" class="sub-perm-check" value="Settings-3"> ব্রাঞ্চ ম্যানেজমেন্ট</label>
+                    </div>
+                    <button onclick="saveUserPermissions()" style="padding: 12px 25px; background: #1e3c72; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">পারমিশন সেভ করুন</button>
+                </div>
+            `;
+        }
+
+        function saveUserPermissions() {
+            const username = document.getElementById('setupUsername').value.trim();
+            if(!username) { alert('ব্যবহারকারীর নাম দিন!'); return; }
+            const checkboxes = document.querySelectorAll('.sub-perm-check:checked');
+            let allowedModules = [];
+            checkboxes.forEach(cb => allowedModules.push(cb.value));
+            
+            localStorage.setItem(`perm_${username}`, JSON.stringify(allowedModules));
+            alert(`ইউজার '${username}'-এর জন্য সাব-মডিউল পারমিশন সফলভাবে সংরক্ষণ করা হয়েছে!`);
+        }
+
         async function renderGenericModuleUI(container, moduleKey, moduleTitle) {
             const collectionName = moduleKey.toLowerCase().replace('-', '_');
             container.innerHTML = `
@@ -657,7 +691,7 @@
         }
 
         // =========================================================================
-        // ব্রাঞ্চ ম্যানেজমেন্ট (HR-branch management) মডিউল
+        // ব্রাঞ্চ ম্যানেজমেন্ট মডিউল (Settings-3) - ক্লিয়ার বাটন যুক্ত করা হয়েছে
         // =========================================================================
         let branchList = [];
         let editingDocId = null;
@@ -691,7 +725,10 @@
                         <input type="email" id="branchEmailInput" placeholder="ই-মেইল ঠিকানা..." style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
                     </div>
 
-                    <button onclick="saveBranchData()" style="padding: 12px 30px; background: #1e3c72; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px;">সেভ বা আপডেট করুন</button>
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="saveBranchData()" style="padding: 12px 30px; background: #1e3c72; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px;">সেভ বা আপডেট করুন</button>
+                        <button onclick="clearBranchForm()" style="padding: 12px 25px; background: #6c757d; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px;">ক্লিয়ার (Clear)</button>
+                    </div>
                 </div>
 
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
@@ -718,6 +755,15 @@
                 </div>
             `;
             await fetchBranchesFromFirebase();
+        }
+
+        function clearBranchForm() {
+            document.getElementById('branchNameInput').value = '';
+            document.getElementById('branchAddressInput').value = '';
+            document.getElementById('branchMobileInput').value = '';
+            document.getElementById('branchEmailInput').value = '';
+            editingDocId = null;
+            document.getElementById('autoBranchCode').innerText = `BR-${Math.floor(1000 + Math.random() * 9000)}`;
         }
 
         async function fetchBranchesFromFirebase() {
@@ -818,7 +864,6 @@
             populateBranchTable(filtered);
         }
 
-        // পেজ রিলোড সমস্যা সমাধান করে প্রিন্ট ফাংশন
         function printBranchList() {
             const printContent = document.getElementById('printableBranchTable').innerHTML;
             const win = window.open('', '', 'height=700,width=900');
