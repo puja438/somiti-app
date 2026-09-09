@@ -549,7 +549,9 @@
             
             const formArea = document.getElementById('moduleSpecificFormArea');
             
-            if (moduleKey === 'Settings-1') {
+            if (moduleKey === 'Home-1') {
+                renderOrgSettingsUI(formArea);
+            } else if (moduleKey === 'Settings-1') {
                 renderUserSetupUI(formArea);
             } else if (moduleKey === 'Settings-2') {
                 renderHRPermissionUI(formArea);
@@ -558,6 +560,7 @@
             } else {
                 renderGenericModuleUI(formArea, moduleKey, moduleTitle);
             }
+
             
             if(!isRestoring) window.scrollTo(0, 0);
         }
