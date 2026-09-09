@@ -163,11 +163,11 @@
 </head>
 <body>
 
-    <!-- ================= FIREBASE SDK & FIRESTORE SETUP ================= -->
+    <!-- ================= FIREBASE SDK (v12.18.0) & FIRESTORE SETUP ================= -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase.app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase.analytics.js";
-        import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
+        import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyBMQnh34_oN4pQr-lfMMNpb-_VPAk2ROOk",
@@ -420,6 +420,7 @@
             });
         }
 
+        // ২৪ ঘণ্টার জন্য পারসিস্টেন্ট লগইন চেক
         function checkPersistentLogin() {
             const loginTime = localStorage.getItem('loginTime');
             const now = new Date().getTime();
@@ -493,6 +494,9 @@
             submenu.style.display = (submenu.style.display === "block") ? "none" : "block";
         }
 
+        // =========================================================================
+        // মডিউল লোডিং সেকশন
+        // =========================================================================
         function loadSubModuleContent(moduleKey, moduleTitle, isRestoring = false) {
             let parentModuleCode = "mod1";
             if(moduleKey.startsWith("Member")) parentModuleCode = "mod2";
@@ -814,13 +818,18 @@
             populateBranchTable(filtered);
         }
 
+        // পেজ রিলোড সমস্যা সমাধান করে প্রিন্ট ফাংশন
         function printBranchList() {
             const printContent = document.getElementById('printableBranchTable').innerHTML;
-            const originalContent = document.body.innerHTML;
-            document.body.innerHTML = `<h2 style="text-align:center;">ব্রাঞ্চ তালিকা রিপোর্ট</h2>` + printContent;
-            window.print();
-            document.body.innerHTML = originalContent;
-            window.location.reload();
+            const win = window.open('', '', 'height=700,width=900');
+            win.document.write('<html><head><title>ব্রাঞ্চ তালিকা রিপোর্ট</title>');
+            win.document.write('<style>table{width:100%; border-collapse:collapse;} th,td{border:1px solid #cbd5e1; padding:10px; text-align:center;}</style>');
+            win.document.write('</head><body>');
+            win.document.write('<h2 style="text-align:center;">ব্রাঞ্চ তালিকা রিপোর্ট</h2>');
+            win.document.write(printContent);
+            win.document.write('</body></html>');
+            win.document.close();
+            win.print();
         }
     </script>
 </body>
