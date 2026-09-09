@@ -1302,6 +1302,182 @@
             win.document.close();
             win.print();
         }
+                // =========================================================================
+        // প্রতিষ্ঠান ও ব্যানার পরিবর্তন (Home-1) মডিউল
+        // =========================================================================
+        let orgList = [];
+        let editingOrgDocId = null;
+
+        async function renderOrgSettingsUI(container) {
+            container.innerHTML = `
+                <div style="background: #f8fafc; padding: 25px; border-radius: 12px; border: 1px solid #cbd5e1; margin-bottom: 30px;">
+                    <h3 style="margin-top:0; color: #1e3c72; border-bottom: 2px solid #cbd5e1; padding-bottom: 8px;">প্রতিষ্ঠান ও ব্যানার পরিবর্তন</h3>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">প্রতিষ্ঠানের নাম:</label>
+                        <input type="text" id="orgNameInput" placeholder="প্রতিষ্ঠানের নাম লিখুন..." style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">ঠিকানা:</label>
+                        <input type="text" id="orgAddressInput" placeholder="প্রতিষ্ঠানের ঠিকানা লিখুন..." style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">মোবাইল নম্বর:</label>
+                        <input type="text" id="orgMobileInput" placeholder="মোবাইল নম্বর লিখুন..." style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">ই-মেইল ঠিকানা:</label>
+                        <input type="email" id="orgEmailInput" placeholder="ই-মেইল ঠিকানা লিখুন..." style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+                    </div>
+
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="saveOrgData()" style="padding: 12px 30px; background: #1e3c72; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px;">সেভ বা আপডেট করুন</button>
+                        <button onclick="clearOrgForm()" style="padding: 12px 25px; background: #6c757d; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px;">ক্লিয়ার (Clear)</button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <h3 style="padding: 15px; margin: 0; background: #e3f2fd; color: #1e3c72; text-align: left; padding-left: 20px;">প্রতিষ্ঠানের তথ্য তালিকা</h3>
+                    <table style="width:100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: #e3f2fd; color: #1e3c72;">
+                                <th style="padding: 12px; border: 1px solid #cbd5e1;">প্রতিষ্ঠানের নাম</th>
+                                <th style="padding: 12px; border: 1px solid #cbd5e1;">ঠিকানা</th>
+                                <th style="padding: 12px; border: 1px solid #cbd5e1;">মোবাইল</th>
+                                <th style="padding: 12px; border: 1px solid #cbd5e1;">ই-মেইল</th>
+                                <th style="padding: 12px; border: 1px solid #cbd5e1;">একশন</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orgTableBody">
+                            <tr><td colspan="5" style="padding: 15px; text-align: center;">লোড হচ্ছে...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            await fetchOrgDataFromFirebase();
+        }
+
+        async function fetchOrgDataFromFirebase() {
+            try {
+                const querySnapshot = await window.getDocs(window.collection(window.db, "organization_info"));
+                orgList = [];
+                querySnapshot.forEach((docSnap) => {
+                    orgList.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                populateOrgTable(orgList);
+                updateDashboardOrgDisplay(orgList);
+            } catch (error) {
+                console.error("ডাটা লোড করতে সমস্যা হয়েছে: ", error);
+            }
+        }
+
+        function populateOrgTable(data) {
+            const tbody = document.getElementById('orgTableBody');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            
+            if(data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="padding: 15px; text-align: center; color: #777;">কোনো তথ্য পাওয়া যায়নি</td></tr>`;
+                return;
+            }
+
+            data.forEach((item) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="padding: 12px; border: 1px solid #cbd5e1; font-weight:bold;">${item.name || ''}</td>
+                        <td style="padding: 12px; border: 1px solid #cbd5e1;">${item.address || ''}</td>
+                        <td style="padding: 12px; border: 1px solid #cbd5e1;">${item.mobile || ''}</td>
+                        <td style="padding: 12px; border: 1px solid #cbd5e1;">${item.email || ''}</td>
+                        <td style="padding: 12px; border: 1px solid #cbd5e1;">
+                            <button onclick="editOrg('${item.id}')" style="padding: 6px 12px; background: #ffc107; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-right: 5px;">এডিট</button>
+                            <button onclick="deleteOrg('${item.id}')" style="padding: 6px 12px; background: #ff5252; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">ডিলিট</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        async function saveOrgData() {
+            const name = document.getElementById('orgNameInput').value.trim();
+            const address = document.getElementById('orgAddressInput').value.trim();
+            const mobile = document.getElementById('orgMobileInput').value.trim();
+            const email = document.getElementById('orgEmailInput').value.trim();
+
+            if(!name || !address) {
+                alert('অনুগ্রহ করে প্রতিষ্ঠানের নাম এবং ঠিকানা পূরণ করুন!');
+                return;
+            }
+
+            try {
+                if(editingOrgDocId !== null) {
+                    const docRef = window.doc(window.db, "organization_info", editingOrgDocId);
+                    await window.updateDoc(docRef, { name, address, mobile, email, updatedAt: new Date().toISOString() });
+                    alert('তথ্য সফলভাবে আপডেট করা হয়েছে!');
+                    editingOrgDocId = null;
+                } else {
+                    await window.addDoc(window.collection(window.db, "organization_info"), { name, address, mobile, email, createdAt: new Date().toISOString() });
+                    alert('নতুন তথ্য সফলভাবে সেভ করা হয়েছে!');
+                }
+                renderOrgSettingsUI(document.getElementById('moduleSpecificFormArea'));
+            } catch (error) {
+                console.error("ডাটা সেভ করতে সমস্যা হয়েছে: ", error);
+                alert('সেভ করতে সমস্যা হয়েছে!');
+            }
+        }
+
+        function editOrg(id) {
+            const item = orgList.find(o => o.id === id);
+            if(!item) return;
+            editingOrgDocId = item.id;
+            document.getElementById('orgNameInput').value = item.name || '';
+            document.getElementById('orgAddressInput').value = item.address || '';
+            document.getElementById('orgMobileInput').value = item.mobile || '';
+            document.getElementById('orgEmailInput').value = item.email || '';
+            window.scrollTo(0, 0);
+        }
+
+        async function deleteOrg(id) {
+            if(confirm('আপনি কি নিশ্চিতভাবে এই তথ্যটি ডিলিট করতে চান?')) {
+                try {
+                    await window.deleteDoc(window.doc(window.db, "organization_info", id));
+                    alert('সফলভাবে ডিলিট করা হয়েছে!');
+                    renderOrgSettingsUI(document.getElementById('moduleSpecificFormArea'));
+                } catch (error) {
+                    console.error("ডিলিট করতে সমস্যা হয়েছে: ", error);
+                }
+            }
+        }
+
+        function updateDashboardOrgDisplay(data) {
+            const orgNameEl = document.getElementById('displayOrgName');
+            const orgAddressEl = document.getElementById('displayAddress');
+            const orgMobileEl = document.getElementById('displayOrgMobile');
+            const orgEmailEl = document.getElementById('displayOrgEmail');
+
+            if(data && data.length > 0) {
+                const latest = data[data.length - 1];
+                if(orgNameEl) orgNameEl.innerText = latest.name || 'প্রতিষ্ঠানের নাম';
+                if(orgAddressEl) orgAddressEl.innerText = `ঠিকানা: ${latest.address || '-'}`;
+                if(orgMobileEl) orgMobileEl.innerText = `মোবাইল: ${latest.mobile || '-'}`;
+                if(orgEmailEl) orgEmailEl.innerText = `ইমেইল: ${latest.email || '-'}`;
+            } else {
+                if(orgNameEl) orgNameEl.innerText = 'প্রতিষ্ঠানের নাম';
+                if(orgAddressEl) orgAddressEl.innerText = 'ঠিকানা ও ব্রাঞ্চ: -';
+                if(orgMobileEl) orgMobileEl.innerText = 'মোবাইল: -';
+                if(orgEmailEl) orgEmailEl.innerText = 'ইমেইল: -';
+            }
+        }
+
+        function clearOrgForm() {
+            document.getElementById('orgNameInput').value = '';
+            document.getElementById('orgAddressInput').value = '';
+            document.getElementById('orgMobileInput').value = '';
+            document.getElementById('orgEmailInput').value = '';
+            editingOrgDocId = null;
+        }
     </script>
 </body>
 </html>
