@@ -129,10 +129,10 @@
 
         .section-title { text-align: center; font-size: 28px; margin: 50px 0 25px; color: #1e3c72; font-weight: bold; }
 
-        .table-container { background: var(--card-bg); border-radius: 18px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.08); margin-bottom: 50px; }
-        table { width: 100%; border-collapse: collapse; text-align: center; }
-        th, td { padding: 18px; border-bottom: 1px solid #edf2f7; font-size: 17px; }
-        th { background-color: var(--secondary-color); color: #1e3c72; font-weight: bold; font-size: 18px; }
+        .table-container { background: var(--card-bg); border-radius: 18px; overflow-x: auto; box-shadow: 0 8px 25px rgba(0,0,0,0.08); margin-bottom: 50px; }
+        table { width: 100%; border-collapse: collapse; text-align: center; white-space: nowrap; }
+        th, td { padding: 14px; border-bottom: 1px solid #edf2f7; font-size: 15px; }
+        th { background-color: var(--secondary-color); color: #1e3c72; font-weight: bold; font-size: 16px; }
 
         .about-us, .notice-board { 
             background: var(--card-bg); 
@@ -195,15 +195,10 @@
         window.getDoc = getDoc;
     </script>
 
-    <!-- ================= CONFIGURATION & PERMISSIONS ================= -->
+    <!-- ================= CONFIGURATION ================= -->
     <script>
         const ADMIN_USER_ID = "admin";
         const ADMIN_PASSWORD = "123";
-
-        const userPermissions = {
-            mod1: true, mod2: true, mod3: true, mod4: true,
-            mod5: true, mod6: true, mod7: true, mod8: true
-        };
 
         const appConfig = {
             modules: {
@@ -222,7 +217,7 @@
     <!-- হেডার সেকশন -->
     <header>
         <div class="header-left">
-            <div id="authButtonContainer">
+            <div id="authButtonContainer" style="display: flex; align-items: center; gap: 12px;">
                 <button class="login-btn" onclick="openLoginModal()">Login</button>
             </div>
             <button class="menu-toggle-btn" id="threeDotMenu" style="display:none;" onclick="toggleSidebar()">☰</button>
@@ -319,7 +314,7 @@
         <!-- ড্যাশবোর্ড ভিউ -->
         <div id="dashboardView">
             <div class="hero-section">
-                <h2 id="displayOrgName">প্রতিষ্ঠانের নাম</h2>
+                <h2 id="displayOrgName">প্রতিষ্ঠানের নাম</h2>
                 <p id="displayAddress">ঠিকানা ও ব্রাঞ্চ: -</p>
             </div>
 
@@ -369,7 +364,6 @@
             </div>
             
             <div style="background: white; padding: 35px; border-radius: 18px; box-shadow: 0 6px 25px rgba(0,0,0,0.08);">
-                <p id="formSubKeyText" style="color: #666; margin-bottom: 20px; font-size: 16px;"></p>
                 <div id="moduleSpecificFormArea">
                     <p style="color: #1e3c72; font-weight: bold; font-size: 16px;">[ডিফল্ট নমুনা ফর্ম এরিয়া]</p>
                 </div>
@@ -413,9 +407,18 @@
             
             if(loginTime && (now - loginTime < 86400000)) {
                 document.getElementById('threeDotMenu').style.display = 'block';
-                document.getElementById('authButtonContainer').innerHTML = `<button class="logout-btn" onclick="performLogout()">Logout</button>`;
+                const loggedUserName = localStorage.getItem('loggedUserName') || 'Admin';
+                const loggedUserRole = localStorage.getItem('loggedUserRole') || 'Admin';
+                
+                document.getElementById('authButtonContainer').innerHTML = `
+                    <button class="logout-btn" onclick="performLogout()">Logout</button>
+                    <span style="color: white; font-weight: bold; font-size: 14px; background: rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 6px;">${loggedUserName} (${loggedUserRole})</span>
+                `;
             } else {
                 localStorage.removeItem('loginTime');
+                localStorage.removeItem('loggedUserId');
+                localStorage.removeItem('loggedUserName');
+                localStorage.removeItem('loggedUserRole');
                 localStorage.removeItem('activeModuleKey');
                 localStorage.removeItem('activeModuleTitle');
                 document.getElementById('threeDotMenu').style.display = 'none';
@@ -441,21 +444,51 @@
         function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
         function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
 
-        function performLogin() {
-            const id = document.getElementById('userId').value;
-            const pass = document.getElementById('userPass').value;
+        async function performLogin() {
+            const id = document.getElementById('userId').value.trim();
+            const pass = document.getElementById('userPass').value.trim();
+            
             if(id === ADMIN_USER_ID && pass === ADMIN_PASSWORD) {
                 localStorage.setItem('loginTime', new Date().getTime());
+                localStorage.setItem('loggedUserId', 'admin');
+                localStorage.setItem('loggedUserName', 'সিস্টেম এডমিন');
+                localStorage.setItem('loggedUserRole', 'Admin');
                 closeLoginModal();
                 checkPersistentLogin();
-                alert('সফলভাবে লগইন করা হয়েছে!');
-            } else {
-                alert('ভুল ইউজার আইডি অথবা পাসওয়ার্ড!');
+                alert('সফলভাবে এডমিন লগইন করা হয়েছে!');
+                return;
+            }
+
+            try {
+                const docRef = window.doc(window.db, "app_users", id);
+                const docSnap = await window.getDoc(docRef);
+                if(docSnap.exists()) {
+                    const data = docSnap.data();
+                    if(data.password === pass && data.status === 'Active') {
+                        localStorage.setItem('loginTime', new Date().getTime());
+                        localStorage.setItem('loggedUserId', data.code || id);
+                        localStorage.setItem('loggedUserName', data.name || id);
+                        localStorage.setItem('loggedUserRole', data.role || 'User');
+                        closeLoginModal();
+                        checkPersistentLogin();
+                        alert(`স্বাগতম, ${data.name}! সফলভাবে লগইন করা হয়েছে।`);
+                    } else {
+                        alert('ভুল পাসওয়ার্ড অথবা ইউজারটি ইনঅ্যাক্টিভ!');
+                    }
+                } else {
+                    alert('ভুল ইউজার আইডি অথবা পাসওয়ার্ড!');
+                }
+            } catch(e) {
+                console.error(e);
+                alert('লগইন করতে সমস্যা হয়েছে!');
             }
         }
 
         function performLogout() {
             localStorage.removeItem('loginTime');
+            localStorage.removeItem('loggedUserId');
+            localStorage.removeItem('loggedUserName');
+            localStorage.removeItem('loggedUserRole');
             localStorage.removeItem('activeModuleKey');
             localStorage.removeItem('activeModuleTitle');
             checkPersistentLogin();
@@ -480,19 +513,28 @@
             submenu.style.display = (submenu.style.display === "block") ? "none" : "block";
         }
 
-        function loadSubModuleContent(moduleKey, moduleTitle, isRestoring = false) {
-            let parentModuleCode = "mod1";
-            if(moduleKey.startsWith("Member")) parentModuleCode = "mod2";
-            else if(moduleKey.startsWith("Deposit")) parentModuleCode = "mod3";
-            else if(moduleKey.startsWith("Savings")) parentModuleCode = "mod4";
-            else if(moduleKey.startsWith("Loan")) parentModuleCode = "mod5";
-            else if(moduleKey.startsWith("Report")) parentModuleCode = "mod6";
-            else if(moduleKey.startsWith("Trans")) parentModuleCode = "mod7";
-            else if(moduleKey.startsWith("Settings")) parentModuleCode = "mod8";
+        async function loadSubModuleContent(moduleKey, moduleTitle, isRestoring = false) {
+            const loggedUserId = localStorage.getItem('loggedUserId');
 
-            if(userPermissions[parentModuleCode] === false) {
-                alert('দুঃখিত, এই মডিউলে প্রবেশ করার অনুমতি নেই!');
-                return;
+            if(loggedUserId !== 'admin') {
+                try {
+                    const permDocRef = window.doc(window.db, "user_permissions", loggedUserId);
+                    const permSnap = await window.getDoc(permDocRef);
+                    
+                    let allowedList = [];
+                    if(permSnap.exists()) {
+                        allowedList = permSnap.data().allowedSubModules || [];
+                    }
+
+                    if(!allowedList.includes(moduleKey)) {
+                        alert('দুঃখিত আপনার পারমিশন নেই');
+                        return;
+                    }
+                } catch(e) {
+                    console.error(e);
+                    alert('দুঃখিত আপনার পারমিশন নেই');
+                    return;
+                }
             }
 
             if(!isRestoring && sidebarOpenCheck()) toggleSidebar();
@@ -504,14 +546,13 @@
             document.getElementById('dynamicFormContainer').style.display = 'block';
 
             document.getElementById('formPageTitle').innerText = moduleTitle;
-            document.getElementById('formSubKeyText').innerHTML = `সাব-মডিউল আইডি: <b>${moduleKey}</b>`;
             
             const formArea = document.getElementById('moduleSpecificFormArea');
             
             if (moduleKey === 'Settings-1') {
                 renderUserSetupUI(formArea);
             } else if (moduleKey === 'Settings-2') {
-                renderHRPermissionUI(formArea); // <-- [চিহ্নিত স্থান: HR-permission মডিউলের জন্য নতুন কার্যক্রম এখানে যুক্ত করা হলো]
+                renderHRPermissionUI(formArea);
             } else if (moduleKey === 'Settings-3') {
                 renderBranchManagementUI(formArea);
             } else {
@@ -542,7 +583,6 @@
             document.getElementById('dynamicFormContainer').style.display = 'block';
 
             document.getElementById('formPageTitle').innerText = "ক্যারিয়ার ও চাকরির সুযোগ";
-            document.getElementById('formSubKeyText').innerHTML = "আমাদের প্রতিষ্ঠানে চাকরির জন্য নিচের আবেদন ফর্মটি পূরণ করুন:";
             
             const formArea = document.getElementById('moduleSpecificFormArea');
             formArea.innerHTML = `
@@ -568,36 +608,295 @@
         }
 
         // =========================================================================
-        // HR-user setup/transfer (Settings-1)
+        // HR-user setup/transfer (Settings-1) [আপডেটকৃত অংশ]
         // =========================================================================
-        function renderUserSetupUI(container) {
+        let userList = [];
+
+        async function renderUserSetupUI(container) {
+            let branchOptions = `<option value=""></option>`;
+            try {
+                const snapshot = await window.getDocs(window.collection(window.db, "branches"));
+                snapshot.forEach(docSnap => {
+                    const b = docSnap.data();
+                    branchOptions += `<option value="${b.name}">${b.name}</option>`;
+                });
+            } catch(e) { console.error(e); }
+
+            const now = new Date();
+            const bdTimeString = now.toLocaleTimeString('en-US', { timeZone: 'Asia/Dhaka', hour: '2-digit', minute: '2-digit', hour12: true });
+
             container.innerHTML = `
-                <div style="background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #cbd5e1; margin-bottom: 25px;">
-                    <h3 style="margin-top:0; color: #1e3c72;">ইউজার সেটআপ ও ট্রান্সফার ফর্ম</h3>
-                    <input type="text" id="setupUserCode" placeholder="ইউজার কোড বা আইডি..." style="width:100%; padding:12px; margin-bottom:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
-                    <input type="text" id="setupUserName" placeholder="ইউজারের নাম..." style="width:100%; padding:12px; margin-bottom:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
-                    <input type="text" id="setupUserDesignation" placeholder="পদবী..." style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
-                    <button onclick="saveUserSetupData()" style="padding: 12px 25px; background: #1e3c72; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">সেভ করুন</button>
+                <div style="background: #f8fafc; padding: 25px; border-radius: 12px; border: 1px solid #cbd5e1; margin-bottom: 25px;">
+                    <h3 style="margin-top:0; color: #1e3c72; border-bottom: 2px solid #cbd5e1; padding-bottom: 8px;">ইউজার সেটআপ ও ট্রান্সফার</h3>
+                    
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <input type="text" id="searchSetupUserCode" style="flex:1; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+                        <button onclick="searchExistingUserForSetup()" style="padding: 12px 25px; background: #1e3c72; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">সার্চ করুন</button>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">ইউজার আইডি:</label>
+                        <input type="text" id="setupUserCodeInput" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">টাইমিং:</label>
+                        <input type="text" id="userTiming" value="${bdTimeString}" readonly style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box; background:#e9ecef; font-weight:bold; color:#1e3c72;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">নাম:</label>
+                        <input type="text" id="setupUserName" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">এনআইডি:</label>
+                        <input type="text" id="setupUserNid" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">পদবী:</label>
+                        <input type="text" id="setupUserDesignation" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">ব্রাঞ্চ:</label>
+                        <select id="setupUserBranch" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box; background:white;">
+                            ${branchOptions}
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">যোগদানের তারিখ:</label>
+                        <input type="date" id="setupJoinDate" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">মোবাইল:</label>
+                        <input type="text" id="setupUserMobile" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">ইমেইল:</label>
+                        <input type="email" id="setupUserEmail" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">পাসওয়ার্ড:</label>
+                        <input type="password" id="setupUserPassword" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">রোল:</label>
+                        <input type="text" id="setupUserRole" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">স্ট্যাটাস:</label>
+                        <select id="setupUserStatus" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box; background:white;">
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
+                    </div>
+
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="saveOrUpdateUserSetup()" style="padding: 12px 30px; background: #1e3c72; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px;">সেভ বা আপডেট করুন</button>
+                        <button onclick="clearUserSetupForm()" style="padding: 12px 25px; background: #6c757d; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px;">ক্লিয়ার</button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <h3 style="padding: 15px; margin: 0; background: #e3f2fd; color: #1e3c72; text-align: left; padding-left: 20px;">সকল ইউজারের তালিকা</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ইউজার আইডি</th>
+                                <th>টাইমিং</th>
+                                <th>নাম</th>
+                                <th>এনআইডি</th>
+                                <th>পদবী</th>
+                                <th>ব্রাঞ্চ</th>
+                                <th>যোগদানের তারিখ</th>
+                                <th>মোবাইল</th>
+                                <th>ইমেইল</th>
+                                <th>পাসওয়ার্ড</th>
+                                <th>রোল</th>
+                                <th>স্ট্যাটাস</th>
+                                <th>একশন</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userSetupTableBody">
+                            <tr><td colspan="13" style="padding: 15px; text-align: center;">লোড হচ্ছে...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             `;
+            await fetchUsersFromFirebase();
         }
 
-        async function saveUserSetupData() {
-            const code = document.getElementById('setupUserCode').value.trim();
-            const name = document.getElementById('setupUserName').value.trim();
-            const designation = document.getElementById('setupUserDesignation').value.trim();
-            if(!code || !name) { alert('ইউজার কোড এবং নাম আবশ্যক!'); return; }
+        async function fetchUsersFromFirebase() {
             try {
-                await window.setDoc(window.doc(window.db, "app_users", code), { code, name, designation });
-                alert('ইউজার সফলভাবে সেটআপ করা হয়েছে!');
-                document.getElementById('setupUserCode').value = '';
-                document.getElementById('setupUserName').value = '';
-                document.getElementById('setupUserDesignation').value = '';
-            } catch(e) { console.error(e); alert('ত্রুটি ঘটেছে!'); }
+                const querySnapshot = await window.getDocs(window.collection(window.db, "app_users"));
+                userList = [];
+                querySnapshot.forEach(docSnap => {
+                    userList.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                populateUserTable(userList);
+            } catch(e) { console.error(e); }
+        }
+
+        function populateUserTable(data) {
+            const tbody = document.getElementById('userSetupTableBody');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            if(data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="13" style="padding: 15px; text-align: center; color: #777;">কোনো ইউজার পাওয়া যায়নি</td></tr>`;
+                return;
+            }
+            data.forEach(item => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="font-weight:bold;">${item.code || item.id}</td>
+                        <td>${item.timing || ''}</td>
+                        <td>${item.name || ''}</td>
+                        <td>${item.nid || ''}</td>
+                        <td>${item.designation || ''}</td>
+                        <td>${item.branch || ''}</td>
+                        <td>${item.joinDate || ''}</td>
+                        <td>${item.mobile || ''}</td>
+                        <td>${item.email || ''}</td>
+                        <td>${item.password || ''}</td>
+                        <td>${item.role || ''}</td>
+                        <td>${item.status || 'Active'}</td>
+                        <td>
+                            <button onclick="editUserSetup('${item.code || item.id}')" style="padding: 6px 12px; background: #ffc107; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-right: 5px;">এডিট</button>
+                            <button onclick="deleteUserSetup('${item.code || item.id}')" style="padding: 6px 12px; background: #ff5252; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">ডিলিট</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        async function searchExistingUserForSetup() {
+            const queryCode = document.getElementById('searchSetupUserCode').value.trim();
+            if(!queryCode) { alert('অনুগ্রহ করে ইউজার আইডি লিখুন!'); return; }
+            try {
+                const docRef = window.doc(window.db, "app_users", queryCode);
+                const docSnap = await window.getDoc(docRef);
+                if(docSnap.exists()) {
+                    const data = docSnap.data();
+                    document.getElementById('setupUserCodeInput').value = data.code || '';
+                    document.getElementById('userTiming').value = data.timing || '';
+                    document.getElementById('setupUserName').value = data.name || '';
+                    document.getElementById('setupUserNid').value = data.nid || '';
+                    document.getElementById('setupUserDesignation').value = data.designation || '';
+                    document.getElementById('setupUserBranch').value = data.branch || '';
+                    document.getElementById('setupJoinDate').value = data.joinDate || '';
+                    document.getElementById('setupUserMobile').value = data.mobile || '';
+                    document.getElementById('setupUserEmail').value = data.email || '';
+                    document.getElementById('setupUserPassword').value = data.password || '';
+                    document.getElementById('setupUserRole').value = data.role || '';
+                    document.getElementById('setupUserStatus').value = data.status || 'Active';
+                    alert('ইউজার ডাটা সফলভাবে লোড করা হয়েছে!');
+                } else {
+                    alert('এই আইডির কোনো ইউজার পাওয়া যায়নি!');
+                }
+            } catch(e) { console.error(e); alert('সার্চ করতে সমস্যা হয়েছে!'); }
+        }
+
+        async function editUserSetup(code) {
+            try {
+                const docRef = window.doc(window.db, "app_users", code);
+                const docSnap = await window.getDoc(docRef);
+                if(docSnap.exists()) {
+                    const data = docSnap.data();
+                    document.getElementById('searchSetupUserCode').value = data.code || '';
+                    document.getElementById('setupUserCodeInput').value = data.code || '';
+                    document.getElementById('userTiming').value = data.timing || '';
+                    document.getElementById('setupUserName').value = data.name || '';
+                    document.getElementById('setupUserNid').value = data.nid || '';
+                    document.getElementById('setupUserDesignation').value = data.designation || '';
+                    document.getElementById('setupUserBranch').value = data.branch || '';
+                    document.getElementById('setupJoinDate').value = data.joinDate || '';
+                    document.getElementById('setupUserMobile').value = data.mobile || '';
+                    document.getElementById('setupUserEmail').value = data.email || '';
+                    document.getElementById('setupUserPassword').value = data.password || '';
+                    document.getElementById('setupUserRole').value = data.role || '';
+                    document.getElementById('setupUserStatus').value = data.status || 'Active';
+                    window.scrollTo(0, 0);
+                }
+            } catch(e) { console.error(e); }
+        }
+
+        async function deleteUserSetup(code) {
+            if(confirm('আপনি কি নিশ্চিতভাবে এই ইউজারটি ডিলিট করতে চান?')) {
+                try {
+                    await window.deleteDoc(window.doc(window.db, "app_users", code));
+                    alert('সফলভাবে ডিলিট করা হয়েছে!');
+                    renderUserSetupUI(document.getElementById('moduleSpecificFormArea'));
+                } catch(e) { console.error(e); alert('ডিলিট করতে সমস্যা হয়েছে!'); }
+            }
+        }
+
+        async function saveOrUpdateUserSetup() {
+            const code = document.getElementById('setupUserCodeInput').value.trim();
+            const timing = document.getElementById('userTiming').value;
+            const name = document.getElementById('setupUserName').value.trim();
+            const nid = document.getElementById('setupUserNid').value.trim();
+            const designation = document.getElementById('setupUserDesignation').value.trim();
+            const branch = document.getElementById('setupUserBranch').value;
+            const joinDate = document.getElementById('setupJoinDate').value;
+            const mobile = document.getElementById('setupUserMobile').value.trim();
+            const email = document.getElementById('setupUserEmail').value.trim();
+            const password = document.getElementById('setupUserPassword').value.trim();
+            const role = document.getElementById('setupUserRole').value.trim();
+            const status = document.getElementById('setupUserStatus').value;
+
+            if(!code || !name || !password || !nid) {
+                alert('ইউজার আইডি, নাম, এনআইডি এবং পাসওয়ার্ড আবশ্যক!');
+                return;
+            }
+
+            try {
+                const snapshot = await window.getDocs(window.collection(window.db, "app_users"));
+                let isNidDuplicate = false;
+                snapshot.forEach(docSnap => {
+                    const uData = docSnap.data();
+                    if(uData.nid === nid && docSnap.id !== code) {
+                        isNidDuplicate = true;
+                    }
+                });
+
+                if(isNidDuplicate) {
+                    alert('এই এনআইডি নম্বরটি ইতিমধ্যে অন্য একজন ইউজারের জন্য সংরক্ষিত রয়েছে। একটি এনআইডি দ্বিতীয়বার ব্যবহার করা যাবে না!');
+                    return;
+                }
+
+                await window.setDoc(window.doc(window.db, "app_users", code), {
+                    code, timing, name, nid, designation, branch, joinDate, mobile, email, password, role, status, updatedAt: new Date().toISOString()
+                });
+                alert('ইউজারের তথ্য সফলভাবে সেভ বা আপডেট করা হয়েছে!');
+                renderUserSetupUI(document.getElementById('moduleSpecificFormArea'));
+            } catch(e) { console.error(e); alert('সেভ করতে সমস্যা হয়েছে!'); }
+        }
+
+        function clearUserSetupForm() {
+            document.getElementById('searchSetupUserCode').value = '';
+            document.getElementById('setupUserCodeInput').value = '';
+            document.getElementById('setupUserName').value = '';
+            document.getElementById('setupUserNid').value = '';
+            document.getElementById('setupUserDesignation').value = '';
+            document.getElementById('setupUserBranch').selectedIndex = 0;
+            document.getElementById('setupJoinDate').value = '';
+            document.getElementById('setupUserMobile').value = '';
+            document.getElementById('setupUserEmail').value = '';
+            document.getElementById('setupUserPassword').value = '';
+            document.getElementById('setupUserRole').value = '';
+            document.getElementById('setupUserStatus').selectedIndex = 0;
         }
 
         // =========================================================================
-        // [চিহ্নিত স্থান: HR-permission মডিউল কোড শুরু] - ৪১টি সাব-মডিউল পারমিশন ও আপডেট
+        // HR-permission (Settings-2)
         // =========================================================================
         function renderHRPermissionUI(container) {
             container.innerHTML = `
@@ -650,7 +949,7 @@
                             <label><input type="checkbox" class="sub-perm-box" value="Loan-1"> লোন ১: লোন আবেদন</label>
                             <label><input type="checkbox" class="sub-perm-box" value="Loan-2"> লোন ২: লোন অনুমোদন</label>
                             <label><input type="checkbox" class="sub-perm-box" value="Loan-3"> লোন ৩: লোন বিতরণ</label>
-                            <label><input type="checkbox" class="sub-perm-box" value="Loan-4"> লোন ৪: লோনার লিস্ট</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Loan-4"> লোন ৪: লোনার লিস্ট</label>
                             <label><input type="checkbox" class="sub-perm-box" value="Loan-5"> লোন ৫: হিস্টোরি</label>
 
                             <!-- হিসাব ও রিপোর্ট (৫টি) -->
@@ -699,7 +998,6 @@
                     document.getElementById('userInfoDisplayArea').style.display = 'block';
                     document.getElementById('subModulePermissionSection').style.display = 'block';
 
-                    // পূর্বে দেওয়া পারমিশনগুলো লোড করা (যদি থাকে)
                     const permDocRef = window.doc(window.db, "user_permissions", activeSearchedUserCode);
                     const permSnap = await window.getDoc(permDocRef);
                     
@@ -744,9 +1042,6 @@
                 alert('পারমিশন সেভ করতে সমস্যা হয়েছে!');
             }
         }
-        // =========================================================================
-        // [চিহ্নিত স্থান: HR-permission মডিউল কোড শেষ]
-        // =========================================================================
 
         async function renderGenericModuleUI(container, moduleKey, moduleTitle) {
             const collectionName = moduleKey.toLowerCase().replace('-', '_');
