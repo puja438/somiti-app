@@ -524,7 +524,6 @@
             if (moduleKey === 'Settings-3') {
                 renderBranchManagementUI(formArea);
             } else {
-                // জেনেরিক জেনারেটর যা অন্য যেকোনো মডিউলের জন্য স্বয়ংক্রিয়ভাবে ফায়ারবেসে ডাটা সেভ করবে
                 renderGenericModuleUI(formArea, moduleKey, moduleTitle);
             }
             
@@ -578,7 +577,7 @@
         }
 
         // =========================================================================
-        // অন্যান্য সমস্ত মডিউলের জন্য জেনেরিক ফায়ারবেস ইন্টিগ্রেটেড ফর্ম ও লিস্ট ভিউ
+        // জেনেরিক ফায়ারবেস ইন্টিগ্রেটেড ফর্ম ও লিস্ট ভিউ
         // =========================================================================
         async function renderGenericModuleUI(container, moduleKey, moduleTitle) {
             const collectionName = moduleKey.toLowerCase().replace('-', '_');
@@ -610,7 +609,7 @@
         async function saveGenericData(collectionName) {
             const val1 = document.getElementById('genField1').value.trim();
             const val2 = document.getElementById('genField2').value.trim();
-            if(!val1 || !val2) { alert('ফিলগুলো পূরণ করুন!'); return; }
+            if(!val1 || !val2) { alert('ফিল্ডগুলো পূরণ করুন!'); return; }
             try {
                 await window.addDoc(window.collection(window.db, collectionName), { field1: val1, field2: val2, timestamp: new Date().toISOString() });
                 alert('সফলভাবে ফায়ারবেসে সেভ করা হয়েছে!');
@@ -654,7 +653,7 @@
         }
 
         // =========================================================================
-        // ব্রাঞ্চ ম্যানেজমেন্ট (HR-branch management) মডিউলের নিজস্ব ডাটাবেস ফাংশন
+        // ব্রাঞ্চ ম্যানেজমেন্ট (HR-branch management) মডিউল
         // =========================================================================
         let branchList = [];
         let editingDocId = null;
