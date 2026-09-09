@@ -167,7 +167,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
-        import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyBMQnh34_oN4pQr-lfMMNpb-_VPAk2ROOk",
@@ -191,6 +191,8 @@
         window.updateDoc = updateDoc;
         window.deleteDoc = deleteDoc;
         window.doc = doc;
+        window.setDoc = setDoc;
+        window.getDoc = getDoc;
     </script>
 
     <!-- ================= CONFIGURATION & PERMISSIONS ================= -->
@@ -314,21 +316,14 @@
     <!-- মূল পেজ কনটেন্ট এরিয়া -->
     <div class="main-content" id="mainContentArea">
         
-        <!-- ড্যাশবোর্ড ভিউ (এখানে প্রতিষ্ঠানের নাম, ঠিকানা, ডিরেক্টর প্যানেল, কর্মী তালিকা, আমাদের কথা এবং নোটিশ বোর্ড ফাঁকা রাখা হয়েছে) -->
+        <!-- ড্যাশবোর্ড ভিউ -->
         <div id="dashboardView">
-            <!-- ======================================================== -->
-            <!-- [চিহ্নিত স্থান ১]: প্রতিষ্ঠানের নাম ও ঠিকানা (Home-1 / Home-2 এর মাধ্যমে আপডেট হবে) -->
-            <!-- ======================================================== -->
             <div class="hero-section">
                 <h2 id="displayOrgName">প্রতিষ্ঠانের নাম</h2>
                 <p id="displayAddress">ঠিকানা ও ব্রাঞ্চ: -</p>
             </div>
 
-            <!-- ======================================================== -->
-            <!-- [চিহ্নিত স্থান ২]: ডিরেক্টর প্যানেল (Home-3 এর মাধ্যমে আপডেট হবে) -->
-            <!-- ======================================================== -->
             <div class="directors-container" id="displayDirectorsContainer">
-                <!-- ডিরেক্টর কার্ডগুলো ডায়নামিকালি যুক্ত হবে অথবা ফাঁকা থাকবে -->
                 <div class="director-card">
                     <img src="https://via.placeholder.com/120" alt="Director">
                     <h3>-</h3>
@@ -337,9 +332,6 @@
             </div>
 
             <div class="container">
-                <!-- ======================================================== -->
-                <!-- [চিহ্নিত স্থান ৩]: কর্মী তালিকা (Home-4 এর মাধ্যমে আপডেট হবে) -->
-                <!-- ======================================================== -->
                 <h2 class="section-title">কর্মী তালিকা</h2>
                 <div class="table-container">
                     <table>
@@ -357,17 +349,11 @@
                     </table>
                 </div>
 
-                <!-- ======================================================== -->
-                <!-- [চিহ্নিত স্থান ৪]: আমাদের কথা (Home-5 এর মাধ্যমে আপডেট হবে) -->
-                <!-- ======================================================== -->
                 <div class="about-us">
                     <h2 class="section-title" style="margin-top:0;">আমাদের কথা</h2>
                     <p id="displayAboutUsText">এখানে প্রতিষ্ঠানের বিবরণ যুক্ত হবে...</p>
                 </div>
 
-                <!-- ======================================================== -->
-                <!-- [চিহ্নিত স্থান ৫]: নোটিশ বোর্ড (Home-6 এর মাধ্যমে আপডেট হবে) -->
-                <!-- ======================================================== -->
                 <div class="notice-board">
                     <h2 class="section-title" style="margin-top:0;">বিজ্ঞপ্তি</h2>
                     <p id="displayNoticeText">এখানে সমিতির সকল জরুরি নোটিশ ও বিজ্ঞপ্তি প্রদর্শিত হবে।</p>
@@ -523,7 +509,9 @@
             const formArea = document.getElementById('moduleSpecificFormArea');
             
             if (moduleKey === 'Settings-1') {
-                renderUserSetupPermissionUI(formArea);
+                renderUserSetupUI(formArea);
+            } else if (moduleKey === 'Settings-2') {
+                renderHRPermissionUI(formArea); // <-- [চিহ্নিত স্থান: HR-permission মডিউলের জন্য নতুন কার্যক্রম এখানে যুক্ত করা হলো]
             } else if (moduleKey === 'Settings-3') {
                 renderBranchManagementUI(formArea);
             } else {
@@ -580,42 +568,185 @@
         }
 
         // =========================================================================
-        // HR-user setup & permissions (Settings-1) - সাব-মডিউল পারমিশন সহ ইউজার সেটআপ
+        // HR-user setup/transfer (Settings-1)
         // =========================================================================
-        function renderUserSetupPermissionUI(container) {
+        function renderUserSetupUI(container) {
             container.innerHTML = `
                 <div style="background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #cbd5e1; margin-bottom: 25px;">
-                    <h3 style="margin-top:0; color: #1e3c72;">নতুন ইউজার ও সাব-মডিউল পারমিশন সেটআপ</h3>
-                    <input type="text" id="setupUsername" placeholder="ইউজার আইডি বা নাম..." style="width:100%; padding:12px; margin-bottom:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
-                    
-                    <label style="display:block; font-weight:bold; margin-bottom:8px; color:#1e3c72;">যে যে সাব-মডিউলে এই ইউজার কাজ করতে পারবে তা সিলেক্ট করুন:</label>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin-bottom: 15px; background: white; padding: 15px; border-radius: 8px; border: 1px solid #cbd5e1;">
-                        <label><input type="checkbox" class="sub-perm-check" value="Home-1"> প্রতিষ্ঠান ও ব্যানার পরিবর্তন</label>
-                        <label><input type="checkbox" class="sub-perm-check" value="Home-2"> ব্রাঞ্চ ও ঠিকানা পরিবর্তন</label>
-                        <label><input type="checkbox" class="sub-perm-check" value="Home-3"> ডিরেক্টর প্যানেল আপডেট</label>
-                        <label><input type="checkbox" class="sub-perm-check" value="Home-4"> কর্মী তালিকা আপডেট</label>
-                        <label><input type="checkbox" class="sub-perm-check" value="Home-5"> আমাদের কথা</label>
-                        <label><input type="checkbox" class="sub-perm-check" value="Home-6"> নোটিশ সম্পাদনা</label>
-                        <label><input type="checkbox" class="sub-perm-check" value="Member-1"> সদস্য রেজিস্ট্রেশন</label>
-                        <label><input type="checkbox" class="sub-perm-check" value="Deposit-1"> নতুন ডিপোজিট</label>
-                        <label><input type="checkbox" class="sub-perm-check" value="Loan-1"> লোন আবেদন</label>
-                        <label><input type="checkbox" class="sub-perm-check" value="Settings-3"> ব্রাঞ্চ ম্যানেজমেন্ট</label>
-                    </div>
-                    <button onclick="saveUserPermissions()" style="padding: 12px 25px; background: #1e3c72; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">পারমিশন সেভ করুন</button>
+                    <h3 style="margin-top:0; color: #1e3c72;">ইউজার সেটআপ ও ট্রান্সফার ফর্ম</h3>
+                    <input type="text" id="setupUserCode" placeholder="ইউজার কোড বা আইডি..." style="width:100%; padding:12px; margin-bottom:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+                    <input type="text" id="setupUserName" placeholder="ইউজারের নাম..." style="width:100%; padding:12px; margin-bottom:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+                    <input type="text" id="setupUserDesignation" placeholder="পদবী..." style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+                    <button onclick="saveUserSetupData()" style="padding: 12px 25px; background: #1e3c72; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">সেভ করুন</button>
                 </div>
             `;
         }
 
-        function saveUserPermissions() {
-            const username = document.getElementById('setupUsername').value.trim();
-            if(!username) { alert('ব্যবহারকারীর নাম দিন!'); return; }
-            const checkboxes = document.querySelectorAll('.sub-perm-check:checked');
-            let allowedModules = [];
-            checkboxes.forEach(cb => allowedModules.push(cb.value));
-            
-            localStorage.setItem(`perm_${username}`, JSON.stringify(allowedModules));
-            alert(`ইউজার '${username}'-এর জন্য সাব-মডিউল পারমিশন সফলভাবে সংরক্ষণ করা হয়েছে!`);
+        async function saveUserSetupData() {
+            const code = document.getElementById('setupUserCode').value.trim();
+            const name = document.getElementById('setupUserName').value.trim();
+            const designation = document.getElementById('setupUserDesignation').value.trim();
+            if(!code || !name) { alert('ইউজার কোড এবং নাম আবশ্যক!'); return; }
+            try {
+                await window.setDoc(window.doc(window.db, "app_users", code), { code, name, designation });
+                alert('ইউজার সফলভাবে সেটআপ করা হয়েছে!');
+                document.getElementById('setupUserCode').value = '';
+                document.getElementById('setupUserName').value = '';
+                document.getElementById('setupUserDesignation').value = '';
+            } catch(e) { console.error(e); alert('ত্রুটি ঘটেছে!'); }
         }
+
+        // =========================================================================
+        // [চিহ্নিত স্থান: HR-permission মডিউল কোড শুরু] - ৪১টি সাব-মডিউল পারমিশন ও আপডেট
+        // =========================================================================
+        function renderHRPermissionUI(container) {
+            container.innerHTML = `
+                <div style="background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #cbd5e1; margin-bottom: 25px;">
+                    <h3 style="margin-top:0; color: #1e3c72;">HR-permission (সাব-মডিউল পারমিশন ম্যানেজমেন্ট)</h3>
+                    
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <input type="text" id="searchUserKey" placeholder="ইউজার আইডি বা কোড দিয়ে সার্চ করুন..." style="flex:1; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+                        <button onclick="searchUserForPermission()" style="padding: 12px 25px; background: #1e3c72; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">সার্চ করুন</button>
+                    </div>
+
+                    <div id="userInfoDisplayArea" style="display:none; background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #90caf9;">
+                        <p style="margin:0 0 5px; font-size:17px; color:#1e3c72;">নাম: <b id="dispUName">-</b></p>
+                        <p style="margin:0; font-size:17px; color:#1e3c72;">পদবী: <b id="dispUDesig">-</b></p>
+                    </div>
+
+                    <div id="subModulePermissionSection" style="display:none;">
+                        <h4 style="color: #1e3c72; border-bottom: 2px solid #cbd5e1; padding-bottom: 8px; margin-bottom: 15px;">টোটাল ৪১টি সাব-মডিউল পারমিশন লিস্ট</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin-bottom: 20px; background: white; padding: 20px; border-radius: 8px; border: 1px solid #cbd5e1; max-height: 400px; overflow-y: auto;">
+                            <!-- হোম মডিউল (৬টি) -->
+                            <label><input type="checkbox" class="sub-perm-box" value="Home-1"> হোম ১: প্রতিষ্ঠান ও ব্যানার পরিবর্তন</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Home-2"> হোম ২: ব্রাঞ্চ ও ঠিকানা পরিবর্তন</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Home-3"> হোম ৩: ডিরেক্টর প্যানেল আপডেট</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Home-4"> হোম ৪: কর্মী তালিকা আপডেট</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Home-5"> হোম ৫: আমাদের কথা</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Home-6"> হোম ৬: নোটিশ সম্পাদনা</label>
+                            
+                            <!-- সদস্য ব্যবস্থাপনা (৫টি) -->
+                            <label><input type="checkbox" class="sub-perm-box" value="Member-1"> সদস্য ১: নতুন রেজিস্ট্রেশন</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Member-2"> সদস্য ২: সার্চ/আপডেট</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Member-3"> সদস্য ৩: সদস্য লিস্ট</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Member-4"> সদস্য ৪: প্রোফাইল</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Member-5"> সদস্য ৫: ট্রান্সফার</label>
+
+                            <!-- ডিপোজিট ব্যবস্থাপনা (৫টি) -->
+                            <label><input type="checkbox" class="sub-perm-box" value="Deposit-1"> ডিপোজিট ১: নতুন ডিপোজিট</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Deposit-2"> ডিপোজিট ২: সার্চ/আপডেট</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Deposit-3"> ডিপোজিট ৩: ডিপোজিটর লিস্ট</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Deposit-4"> ডিপোজিট ৪: ডিপোজিটর প্রোফাইল</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Deposit-5"> ডিপোজিট ৫: হিস্টরি</label>
+
+                            <!-- সেভিংস অ্যান্ড ডিপিএস (৫টি) -->
+                            <label><input type="checkbox" class="sub-perm-box" value="Savings-1"> সেভিংস ১: সেভিং/ডিপিএস</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Savings-2"> সেভিংস ২: সার্চ/আপডেট</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Savings-3"> সেভিংস ৩: সেভিং/ডিপিএস লিস্ট</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Savings-4"> সেভিংস ৪: প্রোফাইল</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Savings-5"> সেভিংস ৫: হিস্টরি</label>
+
+                            <!-- লোন ব্যবস্থাপনা (৫টি) -->
+                            <label><input type="checkbox" class="sub-perm-box" value="Loan-1"> লোন ১: লোন আবেদন</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Loan-2"> লোন ২: লোন অনুমোদন</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Loan-3"> লোন ৩: লোন বিতরণ</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Loan-4"> লোন ৪: লோনার লিস্ট</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Loan-5"> লোন ৫: হিস্টোরি</label>
+
+                            <!-- হিসাব ও রিপোর্ট (৫টি) -->
+                            <label><input type="checkbox" class="sub-perm-box" value="Report-1"> রিপোর্ট ১: ক্যাশ গ্রহণ</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Report-2"> রিপোর্ট ২: ক্যাশ বিতরণ</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Report-3"> রিপোর্ট ৩: ক্যাশ রিপোর্ট</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Report-4"> রিপোর্ট ৪: কালেকশন রিপোর্ট</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Report-5"> রিপোর্ট ৫: মাসিক/বাৎসরিক রিপোর্ট</label>
+
+                            <!-- লেনদেন (৫টি) -->
+                            <label><input type="checkbox" class="sub-perm-box" value="Trans-1"> লেনদেন ১: কালেকশন</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Trans-2"> লেনদেন ২: সঞ্চয় ফেরত</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Trans-3"> লেনদেন ৩: কালেকশন সিট</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Trans-4"> লেনদেন ৪: বকেয়া লিস্ট</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Trans-5"> লেনদেন ৫: পেইড গ্রাহক</label>
+
+                            <!-- HR-setting (৫টি) -->
+                            <label><input type="checkbox" class="sub-perm-box" value="Settings-1"> HR ১: HR-user setup/transfer</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Settings-2"> HR ২: HR-permission</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Settings-3"> HR ৩: HR-branch management</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Settings-4"> HR ৪: HR-total balance</label>
+                            <label><input type="checkbox" class="sub-perm-box" value="Settings-5"> HR ৫: HR-working report</label>
+                        </div>
+                        <button onclick="saveUserSubPermissions()" style="padding: 12px 30px; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px;">পারমিশন সেভ বা আপডেট করুন</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        let activeSearchedUserCode = "";
+
+        async function searchUserForPermission() {
+            const queryKey = document.getElementById('searchUserKey').value.trim();
+            if(!queryKey) { alert('অনুগ্রহ করে ইউজার আইডি বা কোড লিখুন!'); return; }
+            
+            try {
+                const docRef = window.doc(window.db, "app_users", queryKey);
+                const docSnap = await window.getDoc(docRef);
+
+                if(docSnap.exists()) {
+                    const userData = docSnap.data();
+                    activeSearchedUserCode = userData.code;
+                    document.getElementById('dispUName').innerText = userData.name || "নাম পাওয়া যায়নি";
+                    document.getElementById('dispUDesig').innerText = userData.designation || "পদবী পাওয়া যায়নি";
+                    
+                    document.getElementById('userInfoDisplayArea').style.display = 'block';
+                    document.getElementById('subModulePermissionSection').style.display = 'block';
+
+                    // পূর্বে দেওয়া পারমিশনগুলো লোড করা (যদি থাকে)
+                    const permDocRef = window.doc(window.db, "user_permissions", activeSearchedUserCode);
+                    const permSnap = await window.getDoc(permDocRef);
+                    
+                    const checkboxes = document.querySelectorAll('.sub-perm-box');
+                    checkboxes.forEach(cb => cb.checked = false);
+
+                    if(permSnap.exists()) {
+                        const allowedList = permSnap.data().allowedSubModules || [];
+                        checkboxes.forEach(cb => {
+                            if(allowedList.includes(cb.value)) {
+                                cb.checked = true;
+                            }
+                        });
+                    }
+                } else {
+                    alert('এই আইডি বা কোডের কোনো ইউজার খুঁজে পাওয়া যায়নি!');
+                    document.getElementById('userInfoDisplayArea').style.display = 'none';
+                    document.getElementById('subModulePermissionSection').style.display = 'none';
+                }
+            } catch(e) {
+                console.error(e);
+                alert('সার্চ করতে সমস্যা হয়েছে!');
+            }
+        }
+
+        async function saveUserSubPermissions() {
+            if(!activeSearchedUserCode) { alert('কোনো ইউজার সিলেক্ট করা নেই!'); return; }
+            
+            const checkboxes = document.querySelectorAll('.sub-perm-box:checked');
+            let allowedSubModules = [];
+            checkboxes.forEach(cb => allowedSubModules.push(cb.value));
+
+            try {
+                await window.setDoc(window.doc(window.db, "user_permissions", activeSearchedUserCode), {
+                    userCode: activeSearchedUserCode,
+                    allowedSubModules: allowedSubModules,
+                    updatedAt: new Date().toISOString()
+                });
+                alert('ইউজারের সাব-মডিউল পারমিশন সফলভাবে সংরক্ষণ ও আপডেট করা হয়েছে!');
+            } catch(e) {
+                console.error(e);
+                alert('পারমিশন সেভ করতে সমস্যা হয়েছে!');
+            }
+        }
+        // =========================================================================
+        // [চিহ্নিত স্থান: HR-permission মডিউল কোড শেষ]
+        // =========================================================================
 
         async function renderGenericModuleUI(container, moduleKey, moduleTitle) {
             const collectionName = moduleKey.toLowerCase().replace('-', '_');
@@ -691,7 +822,7 @@
         }
 
         // =========================================================================
-        // ব্রাঞ্চ ম্যানেজমেন্ট মডিউল (Settings-3) - ক্লিয়ার বাটন যুক্ত করা হয়েছে
+        // ব্রাঞ্চ ম্যানেজমেন্ট মডিউল (Settings-3)
         // =========================================================================
         let branchList = [];
         let editingDocId = null;
