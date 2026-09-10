@@ -96,55 +96,63 @@
         .hero-section {
             background: var(--primary-gradient);
             color: white;
-            padding: 60px 30px;
+            padding: 40px 20px;
             text-align: center;
             border-radius: 22px;
             box-shadow: 0 10px 30px rgba(30,60,114,0.25);
-            margin-bottom: 60px;
+            margin-bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
-        .hero-section h2 { font-size: 42px; margin: 0 0 15px; }
-        .hero-section p { font-size: 20px; opacity: 0.95; margin: 0; }
+        .hero-section h2 { font-size: 36px; margin: 0; width: 100%; word-break: break-word; }
+        .hero-section p { font-size: 18px; opacity: 0.95; margin: 0; width: 100%; word-break: break-word; line-height: 1.5; }
 
         .directors-container {
             display: flex;
             justify-content: center;
-            gap: 35px;
-            margin: 0 auto 60px;
-            padding: 0 20px;
+            gap: 25px;
+            margin: 0 auto 50px;
+            padding: 0 10px;
             flex-wrap: wrap;
         }
 
         .director-card {
             background: var(--card-bg);
-            padding: 30px 20px;
+            padding: 25px 15px;
             border-radius: 18px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             text-align: center;
             width: 250px;
             border-top: 5px solid #2a5298;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        .director-card img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; border: 4px solid var(--secondary-color); }
-        .director-card h3 { font-size: 22px; margin: 10px 0 5px; color: #1e3c72; }
-        .director-card p { font-size: 16px; color: #666; margin: 0; }
+        .director-card img { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; margin-bottom: 12px; border: 4px solid var(--secondary-color); }
+        .director-card h3 { font-size: 20px; margin: 5px 0; color: #1e3c72; width: 100%; word-break: break-word; }
+        .director-card p { font-size: 15px; color: #666; margin: 0; width: 100%; word-break: break-word; }
 
-        .section-title { text-align: center; font-size: 28px; margin: 50px 0 25px; color: #1e3c72; font-weight: bold; }
+        .section-title { text-align: center; font-size: 28px; margin: 40px 0 20px; color: #1e3c72; font-weight: bold; }
 
-        .table-container { background: var(--card-bg); border-radius: 18px; overflow-x: auto; box-shadow: 0 8px 25px rgba(0,0,0,0.08); margin-bottom: 50px; }
+        .table-container { background: var(--card-bg); border-radius: 18px; overflow-x: auto; box-shadow: 0 8px 25px rgba(0,0,0,0.08); margin-bottom: 40px; }
         table { width: 100%; border-collapse: collapse; text-align: center; white-space: nowrap; }
         th, td { padding: 14px; border-bottom: 1px solid #edf2f7; font-size: 15px; }
         th { background-color: var(--secondary-color); color: #1e3c72; font-weight: bold; font-size: 16px; }
 
         .about-us, .notice-board { 
             background: var(--card-bg); 
-            padding: 35px; 
+            padding: 30px; 
             border-radius: 18px; 
             text-align: center; 
             box-shadow: 0 8px 25px rgba(0,0,0,0.08); 
-            margin-bottom: 35px; 
+            margin-bottom: 30px; 
             height: auto;
-            min-height: 120px;
+            min-height: 100px;
         }
-        .about-us p, .notice-board p { line-height: 1.9; color: #444; font-size: 18px; margin: 0; word-break: break-word; }
+        .about-us p, .notice-board p { line-height: 1.8; color: #444; font-size: 16px; margin: 0; word-break: break-word; white-space: pre-wrap; text-align: center; }
 
         /* লগইন পপআপ মডাল */
         .modal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); justify-content: center; align-items: center; }
@@ -316,8 +324,12 @@
             <div class="hero-section">
                 <h2 id="displayOrgName">প্রতিষ্ঠানের নাম</h2>
                 <p id="displayAddress">ঠিকানা ও ব্রাঞ্চ: -</p>
+                <div id="displayContactInfo" style="font-size: 16px; font-weight: bold; width: 100%; text-align: center; word-break: break-word;">
+                    <span id="displayOrgMobile">মোবাইল: -</span> | <span id="displayOrgEmail">ইমেইল: -</span>
+                </div>
             </div>
 
+            <h2 class="section-title">ডিরেক্টর প্যানেল</h2>
             <div class="directors-container" id="displayDirectorsContainer">
                 <div class="director-card">
                     <img src="https://via.placeholder.com/120" alt="Director">
@@ -333,7 +345,7 @@
                         <thead>
                             <tr>
                                 <th>নাম</th>
-                                <th>গ্রাম</th>
+                                <th>ব্রাঞ্চ</th>
                                 <th>মোবাইল</th>
                                 <th>পদবী</th>
                             </tr>
@@ -388,7 +400,16 @@
             applyConfigNames();
             checkPersistentLogin();
             restoreActivePageState();
+            fetchAllDashboardData();
         };
+
+        async function fetchAllDashboardData() {
+            await fetchInitialOrgDataForDashboard();
+            await fetchDashboardDirectors();
+            await fetchDashboardStaff();
+            await fetchDashboardAbout();
+            await fetchDashboardNotice();
+        }
 
         function applyConfigNames() {
             const keys = Object.keys(appConfig.modules);
@@ -551,6 +572,14 @@
             
             if (moduleKey === 'Home-1') {
                 renderOrgSettingsUI(formArea);
+            } else if (moduleKey === 'Home-3') {
+                renderDirectorPanelUI(formArea);
+            } else if (moduleKey === 'Home-4') {
+                renderStaffUpdateUI(formArea);
+            } else if (moduleKey === 'Home-5') {
+                renderAboutUsUI(formArea);
+            } else if (moduleKey === 'Home-6') {
+                renderNoticeUI(formArea);
             } else if (moduleKey === 'Settings-1') {
                 renderUserSetupUI(formArea);
             } else if (moduleKey === 'Settings-2') {
@@ -560,7 +589,6 @@
             } else {
                 renderGenericModuleUI(formArea, moduleKey, moduleTitle);
             }
-
             
             if(!isRestoring) window.scrollTo(0, 0);
         }
@@ -611,7 +639,7 @@
         }
 
         // =========================================================================
-        // HR-user setup/transfer (Settings-1) [আপডেটকৃত অংশ]
+        // HR-user setup/transfer (Settings-1)
         // =========================================================================
         let userList = [];
 
@@ -1305,8 +1333,9 @@
             win.document.close();
             win.print();
         }
-                // =========================================================================
-        // প্রতিষ্ঠান ও ব্যানার পরিবর্তন (Home-1) মডিউল
+
+        // =========================================================================
+        // হোম মডিউল ও ড্যাশবোর্ড কার্যক্রম (Home-1 থেকে Home-6)
         // =========================================================================
         let orgList = [];
         let editingOrgDocId = null;
@@ -1372,21 +1401,26 @@
                 });
                 populateOrgTable(orgList);
                 updateDashboardOrgDisplay(orgList);
-            } catch (error) {
-                console.error("ডাটা লোড করতে সমস্যা হয়েছে: ", error);
-            }
+            } catch (error) { console.error(error); }
+        }
+
+        async function fetchInitialOrgDataForDashboard() {
+            try {
+                const querySnapshot = await window.getDocs(window.collection(window.db, "organization_info"));
+                let list = [];
+                querySnapshot.forEach((docSnap) => { list.push(docSnap.data()); });
+                updateDashboardOrgDisplay(list);
+            } catch(e) { console.error(e); }
         }
 
         function populateOrgTable(data) {
             const tbody = document.getElementById('orgTableBody');
             if(!tbody) return;
             tbody.innerHTML = '';
-            
             if(data.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="5" style="padding: 15px; text-align: center; color: #777;">কোনো তথ্য পাওয়া যায়নি</td></tr>`;
                 return;
             }
-
             data.forEach((item) => {
                 tbody.innerHTML += `
                     <tr>
@@ -1408,27 +1442,18 @@
             const address = document.getElementById('orgAddressInput').value.trim();
             const mobile = document.getElementById('orgMobileInput').value.trim();
             const email = document.getElementById('orgEmailInput').value.trim();
-
-            if(!name || !address) {
-                alert('অনুগ্রহ করে প্রতিষ্ঠানের নাম এবং ঠিকানা পূরণ করুন!');
-                return;
-            }
-
+            if(!name || !address) { alert('অনুগ্রহ করে নাম এবং ঠিকানা দিন!'); return; }
             try {
                 if(editingOrgDocId !== null) {
-                    const docRef = window.doc(window.db, "organization_info", editingOrgDocId);
-                    await window.updateDoc(docRef, { name, address, mobile, email, updatedAt: new Date().toISOString() });
-                    alert('তথ্য সফলভাবে আপডেট করা হয়েছে!');
+                    await window.updateDoc(window.doc(window.db, "organization_info", editingOrgDocId), { name, address, mobile, email });
+                    alert('সফলভাবে আপডেট করা হয়েছে!');
                     editingOrgDocId = null;
                 } else {
-                    await window.addDoc(window.collection(window.db, "organization_info"), { name, address, mobile, email, createdAt: new Date().toISOString() });
-                    alert('নতুন তথ্য সফলভাবে সেভ করা হয়েছে!');
+                    await window.addDoc(window.collection(window.db, "organization_info"), { name, address, mobile, email });
+                    alert('সফলভাবে সেভ করা হয়েছে!');
                 }
                 renderOrgSettingsUI(document.getElementById('moduleSpecificFormArea'));
-            } catch (error) {
-                console.error("ডাটা সেভ করতে সমস্যা হয়েছে: ", error);
-                alert('সেভ করতে সমস্যা হয়েছে!');
-            }
+            } catch(e) { console.error(e); alert('ত্রুটি ঘটেছে!'); }
         }
 
         function editOrg(id) {
@@ -1443,14 +1468,12 @@
         }
 
         async function deleteOrg(id) {
-            if(confirm('আপনি কি নিশ্চিতভাবে এই তথ্যটি ডিলিট করতে চান?')) {
+            if(confirm('ডিলিট করতে চান?')) {
                 try {
                     await window.deleteDoc(window.doc(window.db, "organization_info", id));
-                    alert('সফলভাবে ডিলিট করা হয়েছে!');
+                    alert('ডিলিট সফল হয়েছে!');
                     renderOrgSettingsUI(document.getElementById('moduleSpecificFormArea'));
-                } catch (error) {
-                    console.error("ডিলিট করতে সমস্যা হয়েছে: ", error);
-                }
+                } catch(e) { console.error(e); }
             }
         }
 
@@ -1459,7 +1482,6 @@
             const orgAddressEl = document.getElementById('displayAddress');
             const orgMobileEl = document.getElementById('displayOrgMobile');
             const orgEmailEl = document.getElementById('displayOrgEmail');
-
             if(data && data.length > 0) {
                 const latest = data[data.length - 1];
                 if(orgNameEl) orgNameEl.innerText = latest.name || 'প্রতিষ্ঠানের নাম';
@@ -1480,6 +1502,437 @@
             document.getElementById('orgMobileInput').value = '';
             document.getElementById('orgEmailInput').value = '';
             editingOrgDocId = null;
+        }
+
+        // ডিরেক্টর প্যানেল আপডেট (Home-3)
+        let directorList = [];
+        let editingDirectorId = null;
+
+        async function renderDirectorPanelUI(container) {
+            container.innerHTML = `
+                <div style="background: #f8fafc; padding: 25px; border-radius: 12px; border: 1px solid #cbd5e1; margin-bottom: 30px;">
+                    <h3 style="margin-top:0; color: #1e3c72; border-bottom: 2px solid #cbd5e1; padding-bottom: 8px;">ডিরেক্টর প্যানেল আপডেট</h3>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">নাম:</label>
+                        <input type="text" id="dirNameInput" placeholder="ডিরেক্টরের নাম লিখুন..." style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">পদবী:</label>
+                        <input type="text" id="dirDesignationInput" placeholder="পদবী (যেমন: Director)..." style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;" value="Director">
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">ছবি (ফটো ফাইল বা লিংক):</label>
+                        <input type="file" id="dirImageFile" accept="image/*" style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px; background:white; margin-bottom:10px;">
+                        <input type="text" id="dirImageInput" placeholder="অথবা ছবির সরাসরি URL লিংক দিন..." style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="saveDirectorData()" style="padding: 12px 30px; background: #1e3c72; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px;">সেভ বা আপডেট করুন</button>
+                        <button onclick="clearDirectorForm()" style="padding: 12px 25px; background: #6c757d; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px;">ক্লিয়ার (Clear)</button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <h3 style="padding: 15px; margin: 0; background: #e3f2fd; color: #1e3c72; text-align: left; padding-left: 20px;">ডিরেক্টর তালিকা</h3>
+                    <table style="width:100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: #e3f2fd; color: #1e3c72;">
+                                <th style="padding: 12px; border: 1px solid #cbd5e1;">ছবি</th>
+                                <th style="padding: 12px; border: 1px solid #cbd5e1;">নাম</th>
+                                <th style="padding: 12px; border: 1px solid #cbd5e1;">পদবী</th>
+                                <th style="padding: 12px; border: 1px solid #cbd5e1;">একশন</th>
+                            </tr>
+                        </thead>
+                        <tbody id="directorTableBody">
+                            <tr><td colspan="4" style="padding: 15px; text-align: center;">লোড হচ্ছে...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            await fetchDirectorsFromFirebase();
+        }
+
+        async function fetchDirectorsFromFirebase() {
+            try {
+                const snapshot = await window.getDocs(window.collection(window.db, "directors"));
+                directorList = [];
+                snapshot.forEach(docSnap => { directorList.push({ id: docSnap.id, ...docSnap.data() }); });
+                populateDirectorTable(directorList);
+                updateDashboardDirectors(directorList);
+            } catch(e) { console.error(e); }
+        }
+
+        async function fetchDashboardDirectors() {
+            try {
+                const snapshot = await window.getDocs(window.collection(window.db, "directors"));
+                let list = [];
+                snapshot.forEach(docSnap => { list.push(docSnap.data()); });
+                updateDashboardDirectors(list);
+            } catch(e) { console.error(e); }
+        }
+
+        function populateDirectorTable(data) {
+            const tbody = document.getElementById('directorTableBody');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            if(data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="padding: 15px; text-align: center; color: #777;">কোনো ডিরেক্টর পাওয়া যায়নি</td></tr>`;
+                return;
+            }
+            data.forEach(item => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="padding: 12px; border: 1px solid #cbd5e1;"><img src="${item.image || 'https://via.placeholder.com/120'}" style="width:50px; height:50px; border-radius:50%; object-fit:cover;"></td>
+                        <td style="padding: 12px; border: 1px solid #cbd5e1; font-weight:bold;">${item.name || ''}</td>
+                        <td style="padding: 12px; border: 1px solid #cbd5e1;">${item.designation || 'Director'}</td>
+                        <td style="padding: 12px; border: 1px solid #cbd5e1;">
+                            <button onclick="editDirector('${item.id}')" style="padding: 6px 12px; background: #ffc107; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-right: 5px;">এডিট</button>
+                            <button onclick="deleteDirector('${item.id}')" style="padding: 6px 12px; background: #ff5252; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">ডিলিট</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        async function saveDirectorData() {
+            const name = document.getElementById('dirNameInput').value.trim();
+            const designation = document.getElementById('dirDesignationInput').value.trim() || 'Director';
+            let image = document.getElementById('dirImageInput').value.trim();
+            const fileInput = document.getElementById('dirImageFile');
+
+            if(!name) { alert('ডিরেক্টরের নাম লিখুন!'); return; }
+
+            if(fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    image = e.target.result;
+                    await commitDirectorToDb(name, designation, image);
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                if(!image) image = 'https://via.placeholder.com/120';
+                await commitDirectorToDb(name, designation, image);
+            }
+        }
+
+        async function commitDirectorToDb(name, designation, image) {
+            try {
+                if(editingDirectorId !== null) {
+                    await window.updateDoc(window.doc(window.db, "directors", editingDirectorId), { name, designation, image });
+                    alert('ডিরেক্টর তথ্য আপডেট করা হয়েছে!');
+                    editingDirectorId = null;
+                } else {
+                    await window.addDoc(window.collection(window.db, "directors"), { name, designation, image });
+                    alert('নতুন ডিরেক্টর সফলভাবে সেভ করা হয়েছে!');
+                }
+                renderDirectorPanelUI(document.getElementById('moduleSpecificFormArea'));
+            } catch(e) { console.error(e); alert('ত্রুটি ঘটেছে!'); }
+        }
+
+        function editDirector(id) {
+            const item = directorList.find(d => d.id === id);
+            if(!item) return;
+            editingDirectorId = item.id;
+            document.getElementById('dirNameInput').value = item.name || '';
+            document.getElementById('dirDesignationInput').value = item.designation || 'Director';
+            document.getElementById('dirImageInput').value = item.image || '';
+            window.scrollTo(0, 0);
+        }
+
+        async function deleteDirector(id) {
+            if(confirm('ডিরেক্টর ডিলিট করতে চান?')) {
+                try {
+                    await window.deleteDoc(window.doc(window.db, "directors", id));
+                    alert('ডিলিট সফল হয়েছে!');
+                    renderDirectorPanelUI(document.getElementById('moduleSpecificFormArea'));
+                } catch(e) { console.error(e); }
+            }
+        }
+
+        function updateDashboardDirectors(data) {
+            const container = document.getElementById('displayDirectorsContainer');
+            if(!container) return;
+            container.innerHTML = '';
+            if(data && data.length > 0) {
+                data.forEach(item => {
+                    container.innerHTML += `
+                        <div class="director-card">
+                            <img src="${item.image || 'https://via.placeholder.com/120'}" alt="Director">
+                            <h3>${item.name || '-'}</h3>
+                            <p>${item.designation || 'Director'}</p>
+                        </div>
+                    `;
+                });
+            } else {
+                container.innerHTML = `
+                    <div class="director-card">
+                        <img src="https://via.placeholder.com/120" alt="Director">
+                        <h3>-</h3>
+                        <p>Director</p>
+                    </div>
+                `;
+            }
+        }
+
+        function clearDirectorForm() {
+            document.getElementById('dirNameInput').value = '';
+            document.getElementById('dirDesignationInput').value = 'Director';
+            document.getElementById('dirImageInput').value = '';
+            document.getElementById('dirImageFile').value = '';
+            editingDirectorId = null;
+        }
+
+        // কর্মী তালিকা আপডেট (Home-4)
+        let staffList = [];
+        let editingStaffId = null;
+
+        async function renderStaffUpdateUI(container) {
+            let branchOpts = `<option value="">ব্রাঞ্চ সিলেক্ট করুন...</option>`;
+            try {
+                const snap = await window.getDocs(window.collection(window.db, "branches"));
+                snap.forEach(d => { const b = d.data(); branchOpts += `<option value="${b.name}">${b.name}</option>`; });
+            } catch(e) { console.error(e); }
+
+            container.innerHTML = `
+                <div style="background: #f8fafc; padding: 25px; border-radius: 12px; border: 1px solid #cbd5e1; margin-bottom: 30px;">
+                    <h3 style="margin-top:0; color: #1e3c72; border-bottom: 2px solid #cbd5e1; padding-bottom: 8px;">কর্মী তালিকা আপডেট</h3>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">নাম:</label>
+                        <input type="text" id="staffNameInput" placeholder="কর্মীর নাম..." style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">ব্রাঞ্চ:</label>
+                        <select id="staffBranchInput" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box; background:white;">
+                            ${branchOpts}
+                        </select>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">মোবাইল নম্বর:</label>
+                        <input type="text" id="staffMobileInput" placeholder="মোবাইল নম্বর..." style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">পদবী:</label>
+                        <input type="text" id="staffDesignationInput" placeholder="পদবী (যেমন: Field Officer)..." style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box;">
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="saveStaffData()" style="padding: 12px 30px; background: #1e3c72; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px;">সেভ বা আপডেট করুন</button>
+                        <button onclick="clearStaffForm()" style="padding: 12px 25px; background: #6c757d; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px;">ক্লিয়ার (Clear)</button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <h3 style="padding: 15px; margin: 0; background: #e3f2fd; color: #1e3c72; text-align: left; padding-left: 20px;">কর্মী তালিকা</h3>
+                    <table style="width:100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: #e3f2fd; color: #1e3c72;">
+                                <th style="padding: 12px; border: 1px solid #cbd5e1;">নাম</th>
+                                <th style="padding: 12px; border: 1px solid #cbd5e1;">ব্রাঞ্চ</th>
+                                <th style="padding: 12px; border: 1px solid #cbd5e1;">মোবাইল</th>
+                                <th style="padding: 12px; border: 1px solid #cbd5e1;">পদবী</th>
+                                <th style="padding: 12px; border: 1px solid #cbd5e1;">একশন</th>
+                            </tr>
+                        </thead>
+                        <tbody id="staffTableBody">
+                            <tr><td colspan="5" style="padding: 15px; text-align: center;">লোড হচ্ছে...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            await fetchStaffFromFirebase();
+        }
+
+        async function fetchStaffFromFirebase() {
+            try {
+                const snapshot = await window.getDocs(window.collection(window.db, "staff_list"));
+                staffList = [];
+                snapshot.forEach(d => staffList.push({ id: d.id, ...d.data() }));
+                populateStaffTable(staffList);
+                updateDashboardStaff(staffList);
+            } catch(e) { console.error(e); }
+        }
+
+        async function fetchDashboardStaff() {
+            try {
+                const snapshot = await window.getDocs(window.collection(window.db, "staff_list"));
+                let list = [];
+                snapshot.forEach(d => list.push(d.data()));
+                updateDashboardStaff(list);
+            } catch(e) { console.error(e); }
+        }
+
+        function populateStaffTable(data) {
+            const tbody = document.getElementById('staffTableBody');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            if(data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="padding: 15px; text-align: center; color: #777;">কোনো কর্মী পাওয়া যায়নি</td></tr>`;
+                return;
+            }
+            data.forEach(item => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="padding: 12px; border: 1px solid #cbd5e1; font-weight:bold;">${item.name || ''}</td>
+                        <td style="padding: 12px; border: 1px solid #cbd5e1;">${item.branch || ''}</td>
+                        <td style="padding: 12px; border: 1px solid #cbd5e1;">${item.mobile || ''}</td>
+                        <td style="padding: 12px; border: 1px solid #cbd5e1;">${item.designation || ''}</td>
+                        <td style="padding: 12px; border: 1px solid #cbd5e1;">
+                            <button onclick="editStaff('${item.id}')" style="padding: 6px 12px; background: #ffc107; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-right: 5px;">এডিট</button>
+                            <button onclick="deleteStaff('${item.id}')" style="padding: 6px 12px; background: #ff5252; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">ডিলিট</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        async function saveStaffData() {
+            const name = document.getElementById('staffNameInput').value.trim();
+            const branch = document.getElementById('staffBranchInput').value;
+            const mobile = document.getElementById('staffMobileInput').value.trim();
+            const designation = document.getElementById('staffDesignationInput').value.trim();
+            if(!name || !mobile) { alert('নাম ও মোবাইল নম্বর দিন!'); return; }
+            try {
+                if(editingStaffId !== null) {
+                    await window.updateDoc(window.doc(window.db, "staff_list", editingStaffId), { name, branch, mobile, designation });
+                    alert('কর্মী তথ্য আপডেট হয়েছে!');
+                    editingStaffId = null;
+                } else {
+                    await window.addDoc(window.collection(window.db, "staff_list"), { name, branch, mobile, designation });
+                    alert('নতুন কর্মী সেভ হয়েছে!');
+                }
+                renderStaffUpdateUI(document.getElementById('moduleSpecificFormArea'));
+            } catch(e) { console.error(e); alert('ত্রুটি ঘটেছে!'); }
+        }
+
+        function editStaff(id) {
+            const item = staffList.find(s => s.id === id);
+            if(!item) return;
+            editingStaffId = item.id;
+            document.getElementById('staffNameInput').value = item.name || '';
+            document.getElementById('staffBranchInput').value = item.branch || '';
+            document.getElementById('staffMobileInput').value = item.mobile || '';
+            document.getElementById('staffDesignationInput').value = item.designation || '';
+            window.scrollTo(0, 0);
+        }
+
+        async function deleteStaff(id) {
+            if(confirm('কর্মী ডিলিট করতে চান?')) {
+                try {
+                    await window.deleteDoc(window.doc(window.db, "staff_list", id));
+                    alert('ডিলিট সফল হয়েছে!');
+                    renderStaffUpdateUI(document.getElementById('moduleSpecificFormArea'));
+                } catch(e) { console.error(e); }
+            }
+        }
+
+        function updateDashboardStaff(data) {
+            const tbody = document.getElementById('displayStaffTableBody');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            if(data && data.length > 0) {
+                data.forEach(item => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${item.name || '-'}</td>
+                            <td>${item.branch || '-'}</td>
+                            <td>${item.mobile || '-'}</td>
+                            <td>${item.designation || '-'}</td>
+                        </tr>
+                    `;
+                });
+            } else {
+                tbody.innerHTML = `<tr><td colspan="4" style="color: #777; text-align: center;">কোনো কর্মী তালিকা পাওয়া যায়নি</td></tr>`;
+            }
+        }
+
+        function clearStaffForm() {
+            document.getElementById('staffNameInput').value = '';
+            document.getElementById('staffBranchInput').selectedIndex = 0;
+            document.getElementById('staffMobileInput').value = '';
+            document.getElementById('staffDesignationInput').value = '';
+            editingStaffId = null;
+        }
+
+        // আমাদের কথা (Home-5)
+        async function renderAboutUsUI(container) {
+            let currentText = "";
+            try {
+                const docSnap = await window.getDoc(window.doc(window.db, "site_content", "about_us"));
+                if(docSnap.exists()) currentText = docSnap.data().text || "";
+            } catch(e) { console.error(e); }
+
+            container.innerHTML = `
+                <div style="background: #f8fafc; padding: 25px; border-radius: 12px; border: 1px solid #cbd5e1; margin-bottom: 30px;">
+                    <h3 style="margin-top:0; color: #1e3c72; border-bottom: 2px solid #cbd5e1; padding-bottom: 8px;">আমাদের কথা সম্পাদনা</h3>
+                    <div style="margin-bottom: 20px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">বিবরণ:</label>
+                        <textarea id="aboutTextInput" rows="6" placeholder="প্রতিষ্ঠানের বিস্তারিত বিবরণ লিখুন..." style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box; font-family:inherit;">${currentText}</textarea>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="saveAboutData()" style="padding: 12px 30px; background: #1e3c72; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px;">সেভ বা আপডেট করুন</button>
+                        <button onclick="document.getElementById('aboutTextInput').value='';" style="padding: 12px 25px; background: #6c757d; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px;">ক্লিয়ার (Clear)</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function saveAboutData() {
+            const text = document.getElementById('aboutTextInput').value.trim();
+            if(!text) { alert('বিবরণ লিখুন!'); return; }
+            try {
+                await window.setDoc(window.doc(window.db, "site_content", "about_us"), { text });
+                alert('সফলভাবে সেভ করা হয়েছে!');
+                fetchDashboardAbout();
+            } catch(e) { console.error(e); alert('ত্রুটি ঘটেছে!'); }
+        }
+
+        async function fetchDashboardAbout() {
+            try {
+                const docSnap = await window.getDoc(window.doc(window.db, "site_content", "about_us"));
+                const el = document.getElementById('displayAboutUsText');
+                if(el && docSnap.exists()) {
+                    el.innerText = docSnap.data().text || 'এখানে প্রতিষ্ঠানের বিবরণ যুক্ত হবে...';
+                }
+            } catch(e) { console.error(e); }
+        }
+
+        // নোটিশ সম্পাদনা (Home-6)
+        async function renderNoticeUI(container) {
+            let currentNotice = "";
+            try {
+                const docSnap = await window.getDoc(window.doc(window.db, "site_content", "notice_board"));
+                if(docSnap.exists()) currentNotice = docSnap.data().text || "";
+            } catch(e) { console.error(e); }
+
+            container.innerHTML = `
+                <div style="background: #f8fafc; padding: 25px; border-radius: 12px; border: 1px solid #cbd5e1; margin-bottom: 30px;">
+                    <h3 style="margin-top:0; color: #1e3c72; border-bottom: 2px solid #cbd5e1; padding-bottom: 8px;">নোটিশ সম্পাদনা</h3>
+                    <div style="margin-bottom: 20px;">
+                        <label style="display:block; font-weight:bold; margin-bottom:5px;">নোটিশ বিবরণ:</label>
+                        <textarea id="noticeTextInput" rows="6" placeholder="জরুরি নোটিশ বা বিজ্ঞপ্তি এখানে লিখুন..." style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; box-sizing:border-box; font-family:inherit;">${currentNotice}</textarea>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="saveNoticeData()" style="padding: 12px 30px; background: #1e3c72; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px;">সেভ বা আপডেট করুন</button>
+                        <button onclick="document.getElementById('noticeTextInput').value='';" style="padding: 12px 25px; background: #6c757d; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px;">ক্লিয়ার (Clear)</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function saveNoticeData() {
+            const text = document.getElementById('noticeTextInput').value.trim();
+            if(!text) { alert('নোটিশ লিখুন!'); return; }
+            try {
+                await window.setDoc(window.doc(window.db, "site_content", "notice_board"), { text });
+                alert('নোটিশ সফলভাবে সেভ করা হয়েছে!');
+                fetchDashboardNotice();
+            } catch(e) { console.error(e); alert('ত্রুটি ঘটেছে!'); }
+        }
+
+        async function fetchDashboardNotice() {
+            try {
+                const docSnap = await window.getDoc(window.doc(window.db, "site_content", "notice_board"));
+                const el = document.getElementById('displayNoticeText');
+                if(el && docSnap.exists()) {
+                    el.innerText = docSnap.data().text || 'এখানে সমিতির সকল জরুরি নোটিশ ও বিজ্ঞপ্তি প্রদর্শিত হবে।';
+                }
+            } catch(e) { console.error(e); }
         }
     </script>
 </body>
